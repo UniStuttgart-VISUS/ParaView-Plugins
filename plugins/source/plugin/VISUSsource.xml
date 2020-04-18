@@ -1,0 +1,44 @@
+<ServerManagerConfiguration>
+    <ProxyGroup name="sources">
+        <!--
+
+        Helix.
+
+        Provide a helix with configurable length, radius and number of windings.
+
+        -->
+        <SourceProxy name="Helix" class="Helix" label="Helix">
+            <Documentation>
+                Provide a helix with configurable length, radius and number of windings.
+            </Documentation>
+
+            <IntVectorProperty name="NumPoints" command="SetNumPoints" label="Number of output points" number_of_elements="1" default_values="100">
+                <Documentation>
+                    Number of output points of the polyline.
+                </Documentation>
+            </IntVectorProperty>
+
+            <DoubleVectorProperty name="Length" command="SetLength" label="Length" number_of_elements="1" default_values="10.0">
+                <Documentation>
+                    Length of the center line around which the helix is created.
+                </Documentation>
+            </DoubleVectorProperty>
+
+            <DoubleVectorProperty name="Radius" command="SetRadius" label="Radius" number_of_elements="1" default_values="1.0">
+                <Documentation>
+                    Radius of the helix (distance from the center line).
+                </Documentation>
+            </DoubleVectorProperty>
+
+            <DoubleVectorProperty name="Windings" command="SetWindings" label="Number of windings" number_of_elements="1" default_values="2.0">
+                <Documentation>
+                    Number of windings of the helix around the center line.
+                </Documentation>
+            </DoubleVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Sources"/>
+            </Hints>
+        </SourceProxy>
+    </ProxyGroup>
+</ServerManagerConfiguration>

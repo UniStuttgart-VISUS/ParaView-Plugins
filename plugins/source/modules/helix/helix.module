@@ -1,0 +1,8 @@
+NAME
+  source::helix
+LIBRARY_NAME
+  helix
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore
