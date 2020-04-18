@@ -1,4 +1,4 @@
-#include "Helix.h"
+#include "helix.h"
 
 #include "vtkCellArray.h"
 #include "vtkDataObject.h"
