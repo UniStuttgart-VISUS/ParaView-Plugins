@@ -14,20 +14,20 @@
 #include <array>
 #include <cmath>
 
-vtkStandardNewMacro(Helix);
+vtkStandardNewMacro(helix);
 
-Helix::Helix()
+helix::helix()
 {
     this->SetNumberOfInputPorts(0);
     this->SetNumberOfOutputPorts(1);
 }
 
-int Helix::RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector* output_vector)
+int helix::RequestInformation(vtkInformation*, vtkInformationVector**, vtkInformationVector* output_vector)
 {
     return 1;
 }
 
-int Helix::RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector* output_vector)
+int helix::RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVector* output_vector)
 {
     // Get output
     auto *out_info = output_vector->GetInformationObject(0);

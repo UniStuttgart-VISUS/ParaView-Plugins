@@ -4,11 +4,11 @@
 #include "vtkInformationVector.h"
 #include "vtkPolyDataAlgorithm.h"
 
-class Helix : public vtkPolyDataAlgorithm
+class helix : public vtkPolyDataAlgorithm
 {
 public:
-    static Helix *New();
-    vtkTypeMacro(Helix, vtkPolyDataAlgorithm);
+    static helix *New();
+    vtkTypeMacro(helix, vtkPolyDataAlgorithm);
 
     vtkSetMacro(NumPoints, int);
     vtkGetMacro(NumPoints, int);
@@ -23,14 +23,14 @@ public:
     vtkGetMacro(Windings, double);
 
 protected:
-    Helix();
+    helix();
 
     int RequestInformation(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
     int RequestData(vtkInformation *, vtkInformationVector **, vtkInformationVector *);
 
 private:
-    Helix(const Helix&);
-    void operator=(const Helix&);
+    helix(const helix&);
+    void operator=(const helix&);
 
     double NumPoints;
 

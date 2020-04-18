@@ -7,7 +7,7 @@
         Provide a helix with configurable length, radius and number of windings.
 
         -->
-        <SourceProxy name="Helix" class="Helix" label="Helix">
+        <SourceProxy name="helix" class="helix" label="Helix">
             <Documentation>
                 Provide a helix with configurable length, radius and number of windings.
             </Documentation>
