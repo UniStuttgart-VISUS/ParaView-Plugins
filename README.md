@@ -6,9 +6,9 @@ ParaView plugins for small, recurrent tasks.
 
 The sources and filters are grouped into separate plugins, based on their functionality:
 
-| Plugin        | Description                                                                           |
-|---------------|---------------------------------------------------------------------------------------|
-| source        | Simple data sources for geometry and test datasets.                                   |
+| Plugin                    | Description                                                               |
+|---------------------------|---------------------------------------------------------------------------|
+| [source](#source-plugin)  | Simple data sources for geometry and test dataset.                        |
 
 ### Sources and filters
 
@@ -18,17 +18,17 @@ The following plugins are sources and filters.
 
 This plugin provides sources for geometry and test datasets.
 
-| Source | Description                                                                                  |
-|--------|----------------------------------------------------------------------------------------------|
-| Helix  | Polyline in form of a simple helix with user-defined length, radius and number of windings.  |
+| Source                                            | Description                                                                                  |
+|---------------------------------------------------|----------------------------------------------------------------------------------------------|
+| [Helix](plugins/source/modules/helix/Readme.md)   | Polyline in form of a simple helix with user-defined length, radius and number of windings.  |
 
 ## Usage
 
 The project uses CMake as build system. To configure the project run CMake. The following configuration options are available:
 
-| Option                                | Description               | Default value     |
-|---------------------------------------|---------------------------|-------------------|
-| PARAVIEW_PLUGIN_ENABLE_VISUSsource    | Enable the source plugin  | on                |
+| Option                                | Description                                   | Default value     |
+|---------------------------------------|-----------------------------------------------|-------------------|
+| PARAVIEW_PLUGIN_ENABLE_VISUSsource    | Enable the [source](#source-plugin) plugin    | on                |
 
 # License
 
