@@ -2,7 +2,7 @@
 
 This source generates a simple helix with used-defined length, radius and number of windings.
 
-![Example helix](helix.png)
+<img src="helix.png" alt="Example helix" style="display:block; margin-left:auto; margin-right:auto; width:40%;" />
 
 ## Parameters
 
