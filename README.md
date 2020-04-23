@@ -6,13 +6,14 @@ ParaView plugins for small, recurrent tasks.
 
 The sources and filters are grouped into separate plugins, based on their functionality:
 
-| Plugin                    | Description                                                               |
-|---------------------------|---------------------------------------------------------------------------|
-| [source](#source-plugin)  | Simple data sources for geometry and test dataset.                        |
+| Plugin                            | Description                                                               |
+|-----------------------------------|---------------------------------------------------------------------------|
+| [source](#source-plugin)          | Simple data sources for geometry and test dataset.                        |
+| [topology](#topology-plugin)      | Computation and extraction of topological features.                       |
 
 ### Sources and filters
 
-The following plugins are sources and filters.
+The following plugins provide sources and filters.
 
 #### Source plugin
 
@@ -22,13 +23,22 @@ This plugin provides sources for geometry and test datasets.
 |---------------------------------------------------|----------------------------------------------------------------------------------------------|
 | [Helix](plugins/source/modules/helix/Readme.md)   | Polyline in form of a simple helix with user-defined length, radius and number of windings.  |
 
+#### Topology plugin
+
+This plugin provides filters for the computation and extraction of topological features, mainly for vector fields of flow simulations.
+
+| Source                                                                                        | Description                                                                                                           |
+|-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| [Attachment/Separation lines](plugins/topology/modules/attachment_separation_lines/Readme.md) | Provide a scalar field on a two-dimensional surface, which zero-contour indicates attachment and separation lines.    |
+
 ## Usage
 
 The project uses CMake as build system. To configure the project run CMake. The following configuration options are available:
 
-| Option                                | Description                                   | Default value     |
-|---------------------------------------|-----------------------------------------------|-------------------|
-| PARAVIEW_PLUGIN_ENABLE_VISUSsource    | Enable the [source](#source-plugin) plugin    | on                |
+| Option                                | Description                                           | Default value     |
+|---------------------------------------|-------------------------------------------------------|-------------------|
+| PARAVIEW_PLUGIN_ENABLE_VISUSsource    | Enable the [source](#source-plugin) plugin.           | on                |
+| PARAVIEW_PLUGIN_ENABLE_VISUStopology  | Enable the [topology](#topology-plugin) plugin.       | on                |
 
 # License
 
