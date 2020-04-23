@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+# Set build type
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
 # Find ParaView
 include(GNUInstallDirs)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")

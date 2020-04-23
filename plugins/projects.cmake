@@ -85,7 +85,7 @@ function(pv_plugin NAME MODULES)
   endif()
 endfunction()
 
-function(pv_module NAME PLUGIN SOURCES)
+function(pv_module NAME PLUGIN SOURCES RESULT_TARGET)
   if (ParaView_VERSION VERSION_LESS 5.7)
     # Create module as static library
     add_library(${PLUGIN}_${NAME} STATIC ${NAME}.h ${NAME}.cxx ${SOURCES})
@@ -95,6 +95,8 @@ function(pv_module NAME PLUGIN SOURCES)
     target_include_directories(${PLUGIN}_${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
     set_target_properties(${PLUGIN}_${NAME} PROPERTIES VTK_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/${NAME}.h")
+
+    set(${RESULT_TARGET} ${PLUGIN}_${NAME} PARENT_SCOPE)
   else()
     # Create VTK module
     vtk_module_add_module(${PLUGIN}::${NAME} FORCE_STATIC
@@ -104,5 +106,8 @@ function(pv_module NAME PLUGIN SOURCES)
       HEADERS
         ${NAME}.h
     )
+
+    _vtk_module_real_target(_RESULT_TARGET ${PLUGIN}::${NAME})
+    set(${RESULT_TARGET} ${_RESULT_TARGET} PARENT_SCOPE)
   endif()
 endfunction()
