@@ -1,0 +1,67 @@
+<ServerManagerConfiguration>
+    <ProxyGroup name="filters">
+        <!--
+
+        Attachment and separation lines.
+
+        Extract the attachment and separation lines on two-dimensional surfaces.
+
+        -->
+        <SourceProxy name="AttachmentAndSeparationLines" class="attachment_separation_lines" label="Attachment/Separation lines">
+            <Documentation>
+                Extract the attachment and separation lines on two-dimensional surfaces.
+            </Documentation>
+
+            <InputProperty name="Surface mesh" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <InputArrayDomain attribute_type="point" name="normal_array" number_of_components="3"/>
+                <InputArrayDomain attribute_type="point" name="velocity_array" number_of_components="3"/>
+                <InputArrayDomain attribute_type="point" name="jacobian_array" number_of_components="9"/>
+                <Documentation>
+                    Surface mesh providing the normals, velocities and Jacobian matrices.
+                </Documentation>
+            </InputProperty>
+
+            <StringVectorProperty name="Normal" label="Normal" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="0">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="normal_array">
+                    <RequiredProperties>
+                        <Property name="Surface mesh" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Surface normals defined at the vertices.
+                </Documentation>
+            </StringVectorProperty>
+            <StringVectorProperty name="Velocity" label="Velocity" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="1">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="velocity_array">
+                    <RequiredProperties>
+                        <Property name="Surface mesh" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Three-dimensional velocities defined at the vertices.
+                </Documentation>
+            </StringVectorProperty>
+            <StringVectorProperty name="Jacobian" label="Jacobian" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="2">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="jacobian_array">
+                    <RequiredProperties>
+                        <Property name="Surface mesh" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Three-dimensional Jacobian matrices defined at the vertices.
+                </Documentation>
+            </StringVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Topology"/>
+            </Hints>
+        </SourceProxy>
+    </ProxyGroup>
+</ServerManagerConfiguration>
