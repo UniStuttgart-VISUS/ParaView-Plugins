@@ -24,6 +24,7 @@ This plugin provides filters for the computation and modification of geometrical
 |-----------------------------------------------------------------------|-------------------------------------------------------------------|
 | [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)     | Connect single lines into polylines, where points are shared.     |
 | [Connect points](plugins/geometry/modules/connect_points/Readme.md)   | Connect points into a polyline, in the order they are stored.     |
+| [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)       | Smooth lines using Gaussian or Taubin smoothing.                  |
 
 #### Source plugin
 

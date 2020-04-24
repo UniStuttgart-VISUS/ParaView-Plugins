@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::smooth_lines
+LIBRARY_NAME
+  smooth_lines
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

@@ -1,3 +1,3 @@
 cmake_minimum_required(VERSION 3.12)
 
-pv_plugin(${PROJECT_NAME} "connect_lines;connect_points")
+pv_plugin(${PROJECT_NAME} "connect_lines;connect_points;smooth_lines")
