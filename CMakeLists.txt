@@ -11,5 +11,8 @@ endif()
 # Create top-level project
 project(VISUS_ParaView_Plugins ${languages})
 
+# Set common include path
+set(common_include ${CMAKE_CURRENT_SOURCE_DIR})
+
 # Add plugins
 add_subdirectory(plugins)
