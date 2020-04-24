@@ -1,0 +1,33 @@
+<ServerManagerConfiguration>
+    <ProxyGroup name="filters">
+        <!--
+
+        Connect lines.
+
+        Connect lines to polylines.
+
+        -->
+        <SourceProxy name="ConnectLines" class="connect_lines" label="Connect lines">
+            <Documentation>
+                Connect lines to polylines.
+            </Documentation>
+
+            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Lines which are connected to polylines where points are shared.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+    </ProxyGroup>
+</ServerManagerConfiguration>
