@@ -63,5 +63,90 @@
                 <ShowInMenu category="VISUS Topology"/>
             </Hints>
         </SourceProxy>
+
+        <!--
+
+        Filter lines.
+
+        Filter for topological lines, such as attachment and separation lines.
+
+        -->
+        <SourceProxy name="FilterLines" class="filter_lines" label="Filter lines">
+            <Documentation>
+                Filter for topological lines, such as attachment and separation lines.
+            </Documentation>
+
+            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Topological lines, e.g., attachment and separation lines.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="AngleFilter" label="Angle filter" command="SetAngleFilter" number_of_elements="1" default_values="0">
+                <BooleanDomain name="bool"/>
+                <Documentation>
+                    Filter for angle between the line segments and a vector from a specified attribute.
+                </Documentation>
+            </IntVectorProperty>
+            <DoubleVectorProperty name="MaxAngle" label="Maximum angle" command="SetMaxAngle" number_of_elements="1" default_values="45.0">
+                <Hints>
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="AngleFilter" value="1" />
+                </Hints>
+                <Documentation>
+                    Maximum angle for which the segments are still valid.
+                </Documentation>
+            </DoubleVectorProperty>
+            <StringVectorProperty name="AngleVector" label="Vector for angle" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="0">
+                <InputArrayDomain attribute_type="point" name="vector_array" number_of_components="3"/>
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="vector_array">
+                    <RequiredProperties>
+                        <Property name="Lines" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Hints>
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="AngleFilter" value="1" />
+                </Hints>
+                <Documentation>
+                    The angle is calculated between this vector and the line segment's orientation.
+                </Documentation>
+            </StringVectorProperty>
+
+            <IntVectorProperty name="SizeFilter" label="Size filter" command="SetSizeFilter" number_of_elements="1" default_values="1">
+                <BooleanDomain name="bool"/>
+                <Documentation>
+                    Filter for removing polylines with only few segments.
+                </Documentation>
+            </IntVectorProperty>
+            <IntVectorProperty name="MinSize" label="Minimum number of segments" command="SetMinSize" number_of_elements="1" default_values="5">
+                <Hints>
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="SizeFilter" value="1" />
+                </Hints>
+                <Documentation>
+                    Minimum number of segments needed for a polyline to not get removed.
+                </Documentation>
+            </IntVectorProperty>
+
+            <PropertyGroup label="Angle">
+                <Property name="AngleFilter" />
+                <Property name="MaxAngle" />
+                <Property name="AngleVector" />
+            </PropertyGroup>
+
+            <PropertyGroup label="Size">
+                <Property name="SizeFilter" />
+                <Property name="MinSize" />
+            </PropertyGroup>
+
+            <Hints>
+                <ShowInMenu category="VISUS Topology"/>
+            </Hints>
+        </SourceProxy>
     </ProxyGroup>
 </ServerManagerConfiguration>
