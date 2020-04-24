@@ -29,5 +29,35 @@
                 <ShowInMenu category="VISUS Geometry"/>
             </Hints>
         </SourceProxy>
+
+        <!--
+
+        Connect points.
+
+        Connect points to form a polyline.
+
+        -->
+        <SourceProxy name="ConnectPoints" class="connect_points" label="Connect points">
+            <Documentation>
+                Connect points to form a polyline.
+            </Documentation>
+
+            <InputProperty name="Points" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Points which are connected to form a polyline.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
     </ProxyGroup>
 </ServerManagerConfiguration>

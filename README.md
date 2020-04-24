@@ -23,6 +23,7 @@ This plugin provides filters for the computation and modification of geometrical
 | Source                                                                | Description                                                       |
 |-----------------------------------------------------------------------|-------------------------------------------------------------------|
 | [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)     | Connect single lines into polylines, where points are shared.     |
+| [Connect points](plugins/geometry/modules/connect_points/Readme.md)   | Connect points into a polyline, in the order they are stored.     |
 
 #### Source plugin
 
