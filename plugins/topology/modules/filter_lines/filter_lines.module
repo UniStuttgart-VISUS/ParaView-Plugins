@@ -1,0 +1,8 @@
+NAME
+  VISUStopology::filter_lines
+LIBRARY_NAME
+  filter_lines
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

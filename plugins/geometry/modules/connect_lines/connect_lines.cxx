@@ -7,6 +7,7 @@
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
+#include "vtkPointData.h"
 #include "vtkPoints.h"
 #include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
@@ -139,6 +140,7 @@ int connect_lines::RequestData(vtkInformation*, vtkInformationVector** input_vec
     cells->SetCells(polylines.size(), cell_indices);
 
     output->SetLines(cells);
+    output->GetPointData()->ShallowCopy(input->GetPointData());
 
     return 1;
 }
