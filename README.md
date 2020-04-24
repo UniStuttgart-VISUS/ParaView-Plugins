@@ -8,12 +8,21 @@ The sources and filters are grouped into separate plugins, based on their functi
 
 | Plugin                            | Description                                                               |
 |-----------------------------------|---------------------------------------------------------------------------|
+| [geometry](#geometry-plugin)      | Geometrical computations and modifications.                               |
 | [source](#source-plugin)          | Simple data sources for geometry and test dataset.                        |
 | [topology](#topology-plugin)      | Computation and extraction of topological features.                       |
 
 ### Sources and filters
 
 The following plugins provide sources and filters.
+
+#### Geometry plugin
+
+This plugin provides filters for the computation and modification of geometrical structures, such as lines.
+
+| Source                                                                | Description                                                       |
+|-----------------------------------------------------------------------|-------------------------------------------------------------------|
+| [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)     | Connect single lines into polylines, where points are shared.     |
 
 #### Source plugin
 
@@ -30,6 +39,7 @@ This plugin provides filters for the computation and extraction of topological f
 | Source                                                                                        | Description                                                                                                           |
 |-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | [Attachment/Separation lines](plugins/topology/modules/attachment_separation_lines/Readme.md) | Provide a scalar field on a two-dimensional surface, which zero-contour indicates attachment and separation lines.    |
+| [Filter lines](plugins/topology/modules/filter_lines/Readme.md)                               | Filter lines using differenc criteria, such as size and angle.                                                        |
 
 ## Usage
 
@@ -37,6 +47,7 @@ The project uses CMake as build system. To configure the project run CMake. The 
 
 | Option                                | Description                                           | Default value     |
 |---------------------------------------|-------------------------------------------------------|-------------------|
+| PARAVIEW_PLUGIN_ENABLE_VISUSgeometry  | Enable the [geometry](#geometry-plugin) plugin.       | on                |
 | PARAVIEW_PLUGIN_ENABLE_VISUSsource    | Enable the [source](#source-plugin) plugin.           | on                |
 | PARAVIEW_PLUGIN_ENABLE_VISUStopology  | Enable the [topology](#topology-plugin) plugin.       | on                |
 
