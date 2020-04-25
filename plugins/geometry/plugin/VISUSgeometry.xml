@@ -48,7 +48,7 @@
                     <Group name="filters"/>
                 </ProxyGroupDomain>
                 <DataTypeDomain name="input_type">
-                    <DataType value="vtkPolyData"/>
+                    <DataType value="vtkPointSet"/>
                 </DataTypeDomain>
                 <Documentation>
                     Points which are connected to form a polyline.

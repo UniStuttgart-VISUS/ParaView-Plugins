@@ -8,6 +8,7 @@
 #include "vtkObjectFactory.h"
 #include "vtkPointData.h"
 #include "vtkPoints.h"
+#include "vtkPointSet.h"
 #include "vtkPolyData.h"
 #include "vtkSmartPointer.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
@@ -24,7 +25,7 @@ int connect_points::FillInputPortInformation(int port, vtkInformation* info)
 {
     if (port == 0)
     {
-        info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPolyData");
+        info->Set(vtkAlgorithm::INPUT_REQUIRED_DATA_TYPE(), "vtkPointSet");
         return 1;
     }
 
@@ -40,7 +41,7 @@ int connect_points::RequestData(vtkInformation*, vtkInformationVector** input_ve
 {
     // Get input and output
     auto* in_info = input_vector[0]->GetInformationObject(0);
-    auto* input = vtkPolyData::SafeDownCast(in_info->Get(vtkDataObject::DATA_OBJECT()));
+    auto* input = vtkPointSet::SafeDownCast(in_info->Get(vtkDataObject::DATA_OBJECT()));
 
     auto* out_info = output_vector->GetInformationObject(0);
     auto* output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
