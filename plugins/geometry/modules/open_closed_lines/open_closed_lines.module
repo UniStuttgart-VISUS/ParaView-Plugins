@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::open_closed_lines
+LIBRARY_NAME
+  open_closed_lines
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

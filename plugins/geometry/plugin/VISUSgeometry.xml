@@ -62,6 +62,46 @@
 
         <!--
 
+        Open closed lines.
+
+        Open closed lines by either removing the last segment or by duplicating the shared point.
+
+        -->
+        <SourceProxy name="OpenClosedLines" class="open_closed_lines" label="Open closed lines">
+            <Documentation>
+                Open closed lines by either removing the last segment or by duplicating the shared point.
+            </Documentation>
+
+            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Lines which are going to be opened.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="Method" command="SetMethod" label="Method" number_of_elements="1" default_values="0">
+                <EnumerationDomain name="enum">
+                    <Entry value="0" text="Remove last segment"/>
+                    <Entry value="1" text="Duplicate shared point"/>
+                </EnumerationDomain>
+                <Documentation>
+                    Method used for opening the line.
+                </Documentation>
+            </IntVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Smooth lines.
 
         Smooth lines by applying Gaussian or Taubin smoothing.

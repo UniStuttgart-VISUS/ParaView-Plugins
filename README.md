@@ -20,11 +20,12 @@ The following plugins provide sources and filters.
 
 This plugin provides filters for the computation and modification of geometrical structures, such as lines.
 
-| Source                                                                | Description                                                       |
-|-----------------------------------------------------------------------|-------------------------------------------------------------------|
-| [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)     | Connect single lines into polylines, where points are shared.     |
-| [Connect points](plugins/geometry/modules/connect_points/Readme.md)   | Connect points into a polyline, in the order they are stored.     |
-| [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)       | Smooth lines using Gaussian or Taubin smoothing.                  |
+| Source                                                                        | Description                                                                           |
+|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)             | Connect single lines into polylines, where points are shared.                         |
+| [Connect points](plugins/geometry/modules/connect_points/Readme.md)           | Connect points into a polyline, in the order they are stored.                         |
+| [Oepn closed lines](plugins/geometry/modules/open_closed_lines/Readme.md)     | Open closed lines by removing the last segment or by duplicating the shared point.    |
+| [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)               | Smooth lines using Gaussian or Taubin smoothing.                                      |
 
 #### Source plugin
 
