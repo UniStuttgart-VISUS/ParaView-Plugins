@@ -145,5 +145,46 @@
                 <ShowInMenu category="VISUS Geometry"/>
             </Hints>
         </SourceProxy>
+
+        <!--
+
+        Truncate lines.
+
+        Truncate lines by defining an offset and a number of points for the new lines.
+
+        -->
+        <SourceProxy name="TruncateLines" class="truncate_lines" label="Truncate lines">
+            <Documentation>
+                Truncate lines by defining an offset and a number of points for the new lines.
+            </Documentation>
+
+            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Lines which are going to be truncated.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="Offset" command="SetOffset" label="Offset" number_of_elements="1" default_values="0">
+                <Documentation>
+                    Offset defining the start index of the new lines.
+                </Documentation>
+            </IntVectorProperty>
+            <IntVectorProperty name="NumPoints" command="SetNumPoints" label="Maximum number of points" number_of_elements="1" default_values="100">
+                <Documentation>
+                    Maximum number of points of the new line.
+                </Documentation>
+            </IntVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
     </ProxyGroup>
 </ServerManagerConfiguration>

@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::truncate_lines
+LIBRARY_NAME
+  truncate_lines
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore
