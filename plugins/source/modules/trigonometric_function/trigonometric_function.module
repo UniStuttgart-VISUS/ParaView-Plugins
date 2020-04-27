@@ -1,0 +1,8 @@
+NAME
+  VISUSsource::trigonometric_function
+LIBRARY_NAME
+  trigonometric_function
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

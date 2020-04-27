@@ -32,7 +32,7 @@ private:
     helix(const helix&);
     void operator=(const helix&);
 
-    double NumPoints;
+    int NumPoints;
 
     double Length;
     double Radius;

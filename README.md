@@ -33,9 +33,10 @@ This plugin provides filters for the computation and modification of geometrical
 
 This plugin provides sources for geometry and test datasets.
 
-| Source                                            | Description                                                                                  |
-|---------------------------------------------------|----------------------------------------------------------------------------------------------|
-| [Helix](plugins/source/modules/helix/Readme.md)   | Polyline in form of a simple helix with user-defined length, radius and number of windings.  |
+| Source                                                                            | Description                                                                                   |
+|-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| [Helix](plugins/source/modules/helix/Readme.md)                                   | Polyline in form of a simple helix with user-defined length, radius and number of windings.   |
+| [Trigonometric function](plugins/source/modules/trigonometric_function/Readme.md) | Polyline defined by a trigonometric function.                                                 |
 
 #### Topology plugin
 
