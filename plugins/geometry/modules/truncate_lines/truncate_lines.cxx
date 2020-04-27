@@ -51,7 +51,6 @@ int truncate_lines::RequestData(vtkInformation*, vtkInformationVector** input_ve
     auto* output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
 
     // Get lines and truncate them
-    std::unordered_set<vtkIdType> point_indices;
     std::vector<std::vector<vtkIdType>> lines;
 
     std::size_t num_points = 0;
@@ -70,9 +69,8 @@ int truncate_lines::RequestData(vtkInformation*, vtkInformationVector** input_ve
             {
                 lines.emplace_back();
 
-                for (vtkIdType i = std::max(0, this->Offset); i < this->NumPoints && i < point_ids->GetNumberOfIds(); ++i)
+                for (vtkIdType i = std::max(0, this->Offset); i < std::max(0, this->Offset) + this->NumPoints && i < point_ids->GetNumberOfIds(); ++i)
                 {
-                    point_indices.insert(point_ids->GetId(i));
                     lines.back().push_back(point_ids->GetId(i));
                 }
 
@@ -103,17 +101,7 @@ int truncate_lines::RequestData(vtkInformation*, vtkInformationVector** input_ve
 
     // Copy points
     auto points = vtkSmartPointer<vtkPoints>::New();
-    points->SetNumberOfPoints(point_indices.size());
-
-    vtkIdType index = 0;
-
-    for (const auto point_id : point_indices)
-    {
-        std::array<double, 3> point;
-        input->GetPoint(point_id, point.data());
-
-        points->SetPoint(index++, point.data());
-    }
+    points->ShallowCopy(input->GetPoints());
 
     output->SetPoints(points);
 
