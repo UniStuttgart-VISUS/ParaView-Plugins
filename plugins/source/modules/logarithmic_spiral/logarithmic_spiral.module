@@ -1,0 +1,8 @@
+NAME
+  VISUSsource::logarithmic_spiral
+LIBRARY_NAME
+  logarithmic_spiral
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

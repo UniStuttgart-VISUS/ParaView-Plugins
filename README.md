@@ -36,6 +36,7 @@ This plugin provides sources for geometry and test datasets.
 | Source                                                                            | Description                                                                                   |
 |-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | [Helix](plugins/source/modules/helix/Readme.md)                                   | Polyline in form of a simple helix with user-defined length, radius and number of windings.   |
+| [Logarithmic spiral](plugins/source/modules/logarithmic_spiral/Readme.md)         | Polyline defined by the logarithmic spiral function.                                          |
 | [Trigonometric function](plugins/source/modules/trigonometric_function/Readme.md) | Polyline defined by a trigonometric function.                                                 |
 
 #### Topology plugin

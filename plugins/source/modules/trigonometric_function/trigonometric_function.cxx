@@ -33,7 +33,7 @@ int trigonometric_function::RequestData(vtkInformation*, vtkInformationVector**,
     auto *out_info = output_vector->GetInformationObject(0);
     auto *output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
 
-    // Create parameterized "virtual" line starting at the origin, around which the trigonometric_function is created
+    // Create parameterized "virtual" line starting at the origin, around which the trigonometric function is created
     const auto x_increment = this->Length / (this->NumPoints - 1);
 
     // Depending on the parameter in [0,1], calculate position on the trigonometric function and set new point
