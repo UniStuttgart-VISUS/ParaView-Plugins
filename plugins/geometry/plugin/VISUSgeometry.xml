@@ -102,6 +102,36 @@
 
         <!--
 
+        Point cells.
+
+        Creates a cell per point.
+
+        -->
+        <SourceProxy name="PointCells" class="point_cells" label="Point cells">
+            <Documentation>
+                Creates a cell per point.
+            </Documentation>
+
+            <InputProperty name="Points" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPointSet"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Points for which a cell should be created.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Smooth lines.
 
         Smooth lines by applying Gaussian or Taubin smoothing.

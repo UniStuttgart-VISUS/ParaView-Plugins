@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::point_cells
+LIBRARY_NAME
+  point_cells
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

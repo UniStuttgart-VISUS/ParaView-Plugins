@@ -24,7 +24,8 @@ This plugin provides filters for the computation and modification of geometrical
 |-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)             | Connect single lines into polylines, where points are shared.                         |
 | [Connect points](plugins/geometry/modules/connect_points/Readme.md)           | Connect points into a polyline, in the order they are stored.                         |
-| [Oepn closed lines](plugins/geometry/modules/open_closed_lines/Readme.md)     | Open closed lines by removing the last segment or by duplicating the shared point.    |
+| [Open closed lines](plugins/geometry/modules/open_closed_lines/Readme.md)     | Open closed lines by removing the last segment or by duplicating the shared point.    |
+| [Point cells](plugins/geometry/modules/point_cells/Readme.md)                 | Points for which a cell should be created.                                            |
 | [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)               | Smooth lines using Gaussian or Taubin smoothing.                                      |
 | [Truncate lines](plugins/geometry/modules/truncate_lines/Readme.md)           | Truncate lines by defining an offset and a number of points for the new lines.        |
 
