@@ -77,6 +77,12 @@
                 </Documentation>
             </DoubleVectorProperty>
 
+            <DoubleVectorProperty name="Lift" command="SetLift" label="Lift" number_of_elements="1" default_values="0.0">
+                <Documentation>
+                    Slope in z-direction for a 3D spiral.
+                </Documentation>
+            </DoubleVectorProperty>
+
             <Hints>
                 <ShowInMenu category="VISUS Sources"/>
             </Hints>

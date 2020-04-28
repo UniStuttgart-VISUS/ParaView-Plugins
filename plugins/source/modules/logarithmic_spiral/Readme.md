@@ -20,3 +20,4 @@ The following parameters are available in the properties panel in ParaView:
 | Length                    | Length of the spiral.                                                                 | 10            |
 | Size factor               | Size factor multiplied with the spiral function.                                      | 1             |
 | Slope                     | Slope of the spiral.                                                                  | 1             |
+| Lift                      | Slope in z-direction for a 3D spiral.                                                 | 0             |

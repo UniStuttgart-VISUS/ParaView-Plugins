@@ -22,6 +22,9 @@ public:
     vtkSetMacro(Slope, double);
     vtkGetMacro(Slope, double);
 
+    vtkSetMacro(Lift, double);
+    vtkGetMacro(Lift, double);
+
 protected:
     logarithmic_spiral();
 
@@ -37,4 +40,5 @@ private:
 
     double SizeFactor;
     double Slope;
+    double Lift;
 };

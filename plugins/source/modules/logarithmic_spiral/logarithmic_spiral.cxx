@@ -52,7 +52,7 @@ int logarithmic_spiral::RequestData(vtkInformation*, vtkInformationVector**, vtk
 
         logarithmic_spiral_point[0] = spiral * std::cos(i * parameter_increment);
         logarithmic_spiral_point[1] = spiral * std::sin(i * parameter_increment);
-        logarithmic_spiral_point[2] = 0.0;
+        logarithmic_spiral_point[2] = this->Lift * i * parameter_increment;
 
         points->SetPoint(i, logarithmic_spiral_point.data());
         cell_ids->SetValue(i + 1, i);
