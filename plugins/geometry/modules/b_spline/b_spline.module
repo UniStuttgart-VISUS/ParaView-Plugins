@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::b_spline
+LIBRARY_NAME
+  b_spline
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

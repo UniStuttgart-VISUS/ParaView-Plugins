@@ -2,6 +2,65 @@
     <ProxyGroup name="filters">
         <!--
 
+        B-Spline.
+
+        Create a B-spline from the input de Boor points.
+
+        -->
+        <SourceProxy name="BSpline" class="b_spline" label="B-Spline">
+            <Documentation>
+                Create a B-spline from the input de Boor points.
+            </Documentation>
+
+            <InputProperty name="Points" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    De Boor points.
+                </Documentation>
+            </InputProperty>
+            <InputProperty name="Point" command="SetInputConnection" port_index="1">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Point for which the closest corresponding point on the B-spline should be calculated.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="NumberOfPoints" command="SetNumberOfPoints" label="Number of output points" number_of_elements="1" default_values="100">
+                <Documentation>
+                    Number of output points.
+                </Documentation>
+            </IntVectorProperty>
+            <IntVectorProperty name="Degree" command="SetDegree" label="Degree" number_of_elements="1" default_values="2">
+                <Documentation>
+                    Degree of the B-spline.
+                </Documentation>
+            </IntVectorProperty>
+            <IntVectorProperty name="HitEndpoints" command="SetHitEndpoints" label="Hit endpoints" number_of_elements="1" default_values="1">
+                <BooleanDomain name="bool"/>
+                <Documentation>
+                    Use multiplicity in the knot vector to reach the endpoints.
+                </Documentation>
+            </IntVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Connect lines.
 
         Connect lines to polylines.
@@ -132,6 +191,42 @@
 
         <!--
 
+        Remove long segments.
+
+        Remove segments that are longer by a factor than the median segment of a polyline.
+
+        -->
+        <SourceProxy name="RemoveLongSegments" class="remove_long_segments" label="Remove long segments">
+            <Documentation>
+                Remove segments that are longer by a factor than the median segment of a polyline.
+            </Documentation>
+
+            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Lines from which segments are removed.
+                </Documentation>
+            </InputProperty>
+
+            <DoubleVectorProperty name="LengthFactor" command="SetLengthFactor" label="Length factor" number_of_elements="1" default_values="2.0">
+                <Documentation>
+                    A segment is removed if it is larger than this factor times the median segment length.
+                </Documentation>
+            </DoubleVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Smooth lines.
 
         Smooth lines by applying Gaussian or Taubin smoothing.
@@ -170,6 +265,36 @@
                     Inflation factor for Taubin smoothing (set zero for Gaussian smoothing).
                 </Documentation>
             </DoubleVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
+        Sort line points.
+
+        Sort stored points, thus they appear in the order of occurance in the lines.
+
+        -->
+        <SourceProxy name="SortLinePoints" class="sort_line_points" label="Sort line points">
+            <Documentation>
+                Sort stored points, thus they appear in the order of occurance in the lines.
+            </Documentation>
+
+            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Lines for which the points should be sorted.
+                </Documentation>
+            </InputProperty>
 
             <Hints>
                 <ShowInMenu category="VISUS Geometry"/>

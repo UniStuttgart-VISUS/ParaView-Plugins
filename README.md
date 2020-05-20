@@ -20,14 +20,17 @@ The following plugins provide sources and filters.
 
 This plugin provides filters for the computation and modification of geometrical structures, such as lines.
 
-| Source                                                                        | Description                                                                           |
-|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)             | Connect single lines into polylines, where points are shared.                         |
-| [Connect points](plugins/geometry/modules/connect_points/Readme.md)           | Connect points into a polyline, in the order they are stored.                         |
-| [Open closed lines](plugins/geometry/modules/open_closed_lines/Readme.md)     | Open closed lines by removing the last segment or by duplicating the shared point.    |
-| [Point cells](plugins/geometry/modules/point_cells/Readme.md)                 | Points for which a cell should be created.                                            |
-| [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)               | Smooth lines using Gaussian or Taubin smoothing.                                      |
-| [Truncate lines](plugins/geometry/modules/truncate_lines/Readme.md)           | Truncate lines by defining an offset and a number of points for the new lines.        |
+| Source                                                                            | Description                                                                           |
+|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [B-Spline](plugins/geometry/modules/b_spline/Readme.md)                           | Create a B-spline from the input de Boor points.                                      |
+| [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)                 | Connect single lines into polylines, where points are shared.                         |
+| [Connect points](plugins/geometry/modules/connect_points/Readme.md)               | Connect points into a polyline, in the order they are stored.                         |
+| [Open closed lines](plugins/geometry/modules/open_closed_lines/Readme.md)         | Open closed lines by removing the last segment or by duplicating the shared point.    |
+| [Point cells](plugins/geometry/modules/point_cells/Readme.md)                     | Points for which a cell should be created.                                            |
+| [Remove long segments](plugins/geometry/modules/remove_long_segments/Readme.md)   | Remove segments from a polyline, which are by far larger than the median segment.     |
+| [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)                   | Smooth lines using Gaussian or Taubin smoothing.                                      |
+| [Sort line points](plugins/geometry/modules/sort_line_points/Readme.md)           | Sort stored points, thus they appear in the order of occurance in the lines.          |
+| [Truncate lines](plugins/geometry/modules/truncate_lines/Readme.md)               | Truncate lines by defining an offset and a number of points for the new lines.        |
 
 #### Source plugin
 

@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::remove_long_segments
+LIBRARY_NAME
+  remove_long_segments
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

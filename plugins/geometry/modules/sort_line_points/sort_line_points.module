@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::sort_line_points
+LIBRARY_NAME
+  sort_line_points
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore
