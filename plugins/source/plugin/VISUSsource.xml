@@ -97,7 +97,7 @@
         -->
         <SourceProxy name="TrigonometricFunction" class="trigonometric_function" label="Trigonometric function">
             <Documentation>
-                Polyline defined by a trigonometric function.
+                Trigonometric function f, such that the polyline is defined by: p(t) = alpha x f(beta x t + gamma) + delta.
             </Documentation>
 
             <IntVectorProperty name="NumPoints" command="SetNumPoints" label="Number of output points" number_of_elements="1" default_values="100">

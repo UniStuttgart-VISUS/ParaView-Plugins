@@ -70,6 +70,19 @@ int filter_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
         }
     }
 
+    // Check parameters
+    if (this->MaxAngle < 0.0 || this->MaxAngle > 180.0)
+    {
+        std::cerr << "The maximum angle must not be negative or larger than 180 degrees" << std::endl;
+        return 0;
+    }
+
+    if (this->MinSize < 0)
+    {
+        std::cerr << "The minimum size must not be negative" << std::endl;
+        return 0;
+    }
+
     // Filter by angle
     if (this->AngleFilter)
     {

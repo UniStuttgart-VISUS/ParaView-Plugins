@@ -18,7 +18,7 @@
                     <Group name="filters"/>
                 </ProxyGroupDomain>
                 <DataTypeDomain name="input_type">
-                    <DataType value="vtkPolyData"/>
+                    <DataType value="vtkPointSet"/>
                 </DataTypeDomain>
                 <Documentation>
                     De Boor points.
@@ -30,7 +30,7 @@
                     <Group name="filters"/>
                 </ProxyGroupDomain>
                 <DataTypeDomain name="input_type">
-                    <DataType value="vtkPolyData"/>
+                    <DataType value="vtkPointSet"/>
                 </DataTypeDomain>
                 <Documentation>
                     Point for which the closest corresponding point on the B-spline should be calculated.
@@ -80,7 +80,7 @@
                     <DataType value="vtkPolyData"/>
                 </DataTypeDomain>
                 <Documentation>
-                    Lines which are connected to polylines where points are shared.
+                    Lines which are being connected to polylines where points are shared.
                 </Documentation>
             </InputProperty>
 
@@ -255,12 +255,14 @@
                     Number of smoothing steps performed.
                 </Documentation>
             </IntVectorProperty>
-            <DoubleVectorProperty name="Lambda" label="Smoothing factor" command="SetLambda" number_of_elements="1" default_values="0.7">
+            <DoubleVectorProperty name="Lambda" command="SetLambda" label="Smoothing factor" number_of_elements="1" default_values="0.7">
+                <DoubleRangeDomain name="lambda_range" min="0.00001" max="1.0" />
                 <Documentation>
                     Gaussian smoothing factor.
                 </Documentation>
             </DoubleVectorProperty>
-            <DoubleVectorProperty name="Mu" label="Inflation factor" command="SetMu" number_of_elements="1" default_values="-0.75">
+            <DoubleVectorProperty name="Mu" command="SetMu" label="Inflation factor" number_of_elements="1" default_values="-0.75">
+                <DoubleRangeDomain name="lambda_range" min="-1.0" max="0.0" />
                 <Documentation>
                     Inflation factor for Taubin smoothing (set zero for Gaussian smoothing).
                 </Documentation>

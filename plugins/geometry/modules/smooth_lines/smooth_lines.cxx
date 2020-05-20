@@ -10,6 +10,8 @@
 
 #include "Eigen/Dense"
 
+#include <cmath>
+#include <iostream>
 #include <vector>
 
 vtkStandardNewMacro(smooth_lines);
@@ -45,6 +47,31 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
     // Get output
     auto* out_info = output_vector->GetInformationObject(0);
     auto* output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    // Check parameters
+    if (this->NumIterations < 0)
+    {
+        std::cerr << "Number of iterations must not be negative" << std::endl;
+        return 0;
+    }
+
+    if (this->Lambda <= 0.0 || this->Lambda > 1.0)
+    {
+        std::cerr << "The smoothing factor must be in the range (0, 1]" << std::endl;
+        return 0;
+    }
+
+    if (this->Mu < -1.0 || this->Mu > 0.0)
+    {
+        std::cerr << "The inflation factor must be in the range [-1, 0]" << std::endl;
+        return 0;
+    }
+
+    if (std::abs(this->Mu) <= this->Lambda && this->Mu != 0.0)
+    {
+        std::cerr << "The absolute value of the inflation factor must be larger than the smoothing factor, or equal 0" << std::endl;
+        return 0;
+    }
 
     // Copy input to output and work on that copy
     output->DeepCopy(input);

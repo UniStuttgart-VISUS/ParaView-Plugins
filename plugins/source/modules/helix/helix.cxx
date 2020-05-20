@@ -13,6 +13,7 @@
 
 #include <array>
 #include <cmath>
+#include <iostream>
 
 vtkStandardNewMacro(helix);
 
@@ -32,6 +33,31 @@ int helix::RequestData(vtkInformation*, vtkInformationVector**, vtkInformationVe
     // Get output
     auto *out_info = output_vector->GetInformationObject(0);
     auto *output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    // Check parameters
+    if (this->NumPoints <= 0)
+    {
+        std::cerr << "The number of output points must be larger than zero" << std::endl;
+        return 0;
+    }
+
+    if (this->Length <= 0.0)
+    {
+        std::cerr << "The length must be larger than zero" << std::endl;
+        return 0;
+    }
+
+    if (this->Radius <= 0.0)
+    {
+        std::cerr << "The radius must be larger than zero" << std::endl;
+        return 0;
+    }
+
+    if (this->Windings <= 0.0)
+    {
+        std::cerr << "The number of windings must be larger than zero" << std::endl;
+        return 0;
+    }
 
     // Create parameterized "virtual" line starting at the origin, around which the helix is created
     const auto height_increment = this->Length / (this->NumPoints - 1);

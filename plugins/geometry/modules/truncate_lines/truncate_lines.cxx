@@ -13,6 +13,7 @@
 #include "vtkStreamingDemandDrivenPipeline.h"
 
 #include <array>
+#include <iostream>
 #include <unordered_set>
 #include <vector>
 
@@ -49,6 +50,19 @@ int truncate_lines::RequestData(vtkInformation*, vtkInformationVector** input_ve
     // Get output
     auto* out_info = output_vector->GetInformationObject(0);
     auto* output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    // Check parameters
+    if (this->Offset < 0)
+    {
+        std::cerr << "Offset must not be negative" << std::endl;
+        return 0;
+    }
+
+    if (this->NumPoints < 0)
+    {
+        std::cerr << "Number of points must not be negative" << std::endl;
+        return 0;
+    }
 
     // Get lines and truncate them
     std::vector<std::vector<vtkIdType>> lines;

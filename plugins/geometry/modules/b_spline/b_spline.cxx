@@ -15,64 +15,16 @@
 #include "vtkSmartPointer.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
 
+#include "Eigen/Dense"
+
 #include <algorithm>
 #include <array>
 #include <cmath>
 #include <iostream>
 #include <numeric>
 #include <string>
+#include <utility>
 #include <vector>
-
-namespace
-{
-    template <typename T>
-    std::array<T, 3> operator+(const std::array<T, 3>& a, const std::array<T, 3>& b)
-    {
-        return std::array<T, 3>{ a[0] + b[0], a[1] + b[1], a[2] + b[2] };
-    }
-
-    template <typename T>
-    std::array<T, 3> operator-(const std::array<T, 3>& a, const std::array<T, 3>& b)
-    {
-        return std::array<T, 3>{ a[0] - b[0], a[1] - b[1], a[2] - b[2] };
-    }
-
-    template <typename T>
-    std::array<T, 3> operator*(T a, const std::array<T, 3>& b)
-    {
-        return std::array<T, 3>{ a* b[0], a* b[1], a* b[2] };
-    }
-
-    template <typename T>
-    std::array<T, 3> operator/(const std::array<T, 3>& a, T b)
-    {
-        return std::array<T, 3>{ a[0] / b, a[1] / b, a[2] / b };
-    }
-
-    template <typename T>
-    float dot(const std::array<T, 3>& a, const std::array<T, 3>& b)
-    {
-        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-    }
-
-    template <typename T>
-    std::array<T, 3> cross(const std::array<T, 3>& a, const std::array<T, 3>& b)
-    {
-        return std::array<T, 3>{ a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0] };
-    }
-
-    template <typename T>
-    float distance(const std::array<T, 3>& a, const std::array<T, 3>& b)
-    {
-        return std::sqrt(dot(a - b, a - b));
-    }
-
-    template <typename T>
-    std::array<T, 3> normalize(const std::array<T, 3>& a)
-    {
-        return a / std::sqrt(dot(a, a));
-    }
-}
 
 vtkStandardNewMacro(b_spline);
 
@@ -115,21 +67,32 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
     auto output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
 
     // Get parameters
+    if (this->Degree < 1)
+    {
+        std::cerr << "The B-spline degree must be at least 1" << std::endl;
+        return 0;
+    }
+
+    if (this->NumberOfPoints < this->Degree + 1)
+    {
+        std::cerr << "The number of output points must be larger the B-spline degree" << std::endl;
+        return 0;
+    }
+
+    if (input->GetNumberOfPoints() < this->Degree + 1)
+    {
+        std::cerr << "Number of de Boor points must be larger than the B-spline degree" << std::endl;
+        return 0;
+    }
+
     const auto degree = static_cast<std::size_t>(this->Degree);
     const auto hit_endpoints = this->HitEndpoints != 0;
     const auto num_output_points = static_cast<std::size_t>(this->NumberOfPoints);
 
-    // Sanity check
+    // Get all de Boor points
     const auto num_de_boor_points = static_cast<std::size_t>(input->GetPoints()->GetNumberOfPoints());
 
-    if (num_de_boor_points <= degree)
-    {
-        std::cerr << "Degree is too large for the number of input de Boor points" << std::endl;
-        return 0;
-    }
-
-    // Get all de Boor points
-    std::vector<std::array<double, 3>> de_boor_points(num_de_boor_points);
+    std::vector<Eigen::Vector3d> de_boor_points(num_de_boor_points);
 
     for (std::size_t i = 0; i < num_de_boor_points; ++i)
     {
@@ -139,7 +102,7 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
     std::cout << "Number of input points: " << num_de_boor_points << std::endl;
 
     // Create knot vector
-    std::vector<float> knot_vector(num_de_boor_points + degree + 1);
+    std::vector<double> knot_vector(num_de_boor_points + degree + 1);
 
     auto first = knot_vector.begin();
     auto last = knot_vector.end();
@@ -149,8 +112,8 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
         // Use multiplicity of the first and last de Boor point
         for (std::size_t i = 0; i < degree; ++i)
         {
-            knot_vector[i] = 0.0f;
-            knot_vector[knot_vector.size() - 1 - i] = static_cast<float>(num_de_boor_points - degree);
+            knot_vector[i] = 0.0;
+            knot_vector[knot_vector.size() - 1 - i] = static_cast<double>(num_de_boor_points - degree);
         }
 
         // Adjust iterators
@@ -171,12 +134,12 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
     const auto u_end = knot_vector[num_de_boor_points];
     const auto u_step = (u_end - u_begin) / (num_output_points - 1);
 
-    std::vector<std::array<float, 3>> points(num_output_points);
-    std::vector<float> points_arc_position(num_output_points);
+    std::vector<Eigen::Vector3d> points(num_output_points);
+    std::vector<double> points_arc_position(num_output_points);
 
-    std::vector<std::array<float, 3>> tangent((degree > 2) ? num_output_points : 0);
-    std::vector<std::array<float, 3>> binormal((degree > 2) ? num_output_points : 0);
-    std::vector<std::array<float, 3>> normal((degree > 2) ? num_output_points : 0);
+    std::vector<Eigen::Vector3d> tangent((degree > 2) ? num_output_points : 0);
+    std::vector<Eigen::Vector3d> binormal((degree > 2) ? num_output_points : 0);
+    std::vector<Eigen::Vector3d> normal((degree > 2) ? num_output_points : 0);
 
     for (std::size_t i = 0; i < num_output_points; ++i)
     {
@@ -187,9 +150,9 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
 
         if (degree > 2)
         {
-            tangent[i] = normalize(compute_point(de_boor_points_first_derivative, knot_vector.cbegin() + 1, knot_vector.cend() - 1, this->Degree - 1, u));
-            binormal[i] = normalize(cross(tangent[i], compute_point(de_boor_points_second_derivative, knot_vector.cbegin() + 2, knot_vector.cend() - 2, this->Degree - 2, u)));
-            normal[i] = cross(tangent[i], binormal[i]);
+            tangent[i] = compute_point(de_boor_points_first_derivative, knot_vector.cbegin() + 1, knot_vector.cend() - 1, this->Degree - 1, u).normalized();
+            binormal[i] = tangent[i].cross(compute_point(de_boor_points_second_derivative, knot_vector.cbegin() + 2, knot_vector.cend() - 2, this->Degree - 2, u)).normalized();
+            normal[i] = tangent[i].cross(binormal[i]);
         }
     }
 
@@ -201,19 +164,17 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
 
         if (input_point->GetPoints()->GetNumberOfPoints() == 1)
         {
-            float nearest_arc;
-            float nearest_distance;
+            double nearest_arc;
+            double nearest_distance;
 
             // Get point
-            std::array<double, 3> point_dbl;
-            input_point->GetPoints()->GetPoint(0, point_dbl.data());
-
-            const std::array<float, 3> point{ static_cast<float>(point_dbl[0]), static_cast<float>(point_dbl[1]), static_cast<float>(point_dbl[2]) };
+            Eigen::Vector3d point;
+            input_point->GetPoints()->GetPoint(0, point.data());
 
             // Use middle of each segment as starting point
-            std::vector<std::pair<float, float>> distances(num_de_boor_points - degree);
+            std::vector<std::pair<double, double>> distances(num_de_boor_points - degree);
 
-            auto comparator = [](const std::pair<float, float>& lhs, const std::pair<float, float>& rhs) -> bool
+            auto comparator = [](const std::pair<double, double>& lhs, const std::pair<double, double>& rhs) -> bool
             {
                 return lhs.second < rhs.second;
             };
@@ -221,9 +182,9 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
             const double delta = knot_vector[degree + 1] - knot_vector[degree];
 
             std::transform(knot_vector.begin() + degree, knot_vector.begin() + num_de_boor_points, distances.begin(),
-                [this, &de_boor_points, &knot_vector, &point, delta](float u) -> std::pair<float, float>
+                [this, &de_boor_points, &knot_vector, &point, delta](double u) -> std::pair<double, double>
                 {
-                    return std::make_pair(u + 0.5f, distance(point, compute_point(de_boor_points, knot_vector.cbegin(), knot_vector.cend(), this->Degree, u + 0.5f * delta)));
+                    return std::make_pair(u + 0.5, (point - compute_point(de_boor_points, knot_vector.cbegin(), knot_vector.cend(), this->Degree, u + 0.5 * delta)).norm());
                 });
 
             std::cout << "Initial guess: " << print_collection(distances.begin(), distances.end()) << std::endl;
@@ -273,14 +234,14 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                         + gamma * knot_vector[index + 0] * knot_vector[index + 0] * de_boor_points[index - 0]) / (alpha * gamma);
 
                     // ... create polynomial relative to p by setting (s(u) - p) as au² + bu + c_dist
-                    const auto c_dist = c - point_dbl;
+                    const auto c_dist = c - point;
 
                     // ... create distance polynomial of form vu^4 + wu^3 + xu^2 + yu + z as (s(u) - p)*(s(u) - p)
-                    const auto v = dot(a, a);
-                    const auto w = 2.0 * dot(a, b);
-                    const auto x = 2.0 * dot(a, c_dist) + dot(b, b);
-                    const auto y = 2.0 * dot(b, c_dist);
-                    const auto z = dot(c_dist, c_dist);
+                    const auto v = a.dot(a);
+                    const auto w = 2.0 * a.dot(b);
+                    const auto x = 2.0 * a.dot(c_dist) + b.dot(b);
+                    const auto y = 2.0 * b.dot(c_dist);
+                    const auto z = c_dist.dot(c_dist);
 
                     // ... calculate first derivative of form 4vu^3 + 3wu^2 + 2xu + y = v'u^3 + w'u^2 + x'u + y'
                     const auto v_dash = 4.0 * v;
@@ -296,8 +257,8 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                     // Use Newton's method to find the root of the first derivative
                     auto u = distance_it->first;
 
-                    const auto u_left = u - 0.5f * delta;
-                    const auto u_right = u + 0.5f * delta;
+                    const auto u_left = u - 0.5 * delta;
+                    const auto u_right = u + 0.5 * delta;
 
                     for (std::size_t i = 0; i < 10; ++i)
                     {
@@ -317,12 +278,12 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                     const auto b_reduced = w_dash + u * a_reduced;
                     const auto c_reduced = x_dash + u * b_reduced;
 
-                    const auto discriminant = b_reduced * b_reduced - 4.0f * a_reduced * c_reduced;
+                    const auto discriminant = b_reduced * b_reduced - 4.0 * a_reduced * c_reduced;
 
-                    if (fabsf(a_reduced) > delta&& discriminant > 0.0f)
+                    if (fabsf(a_reduced) > delta&& discriminant > 0.0)
                     {
-                        u_2 = (-b_reduced + sqrtf(discriminant)) / (2.0f * a_reduced);
-                        u_3 = (-b_reduced - sqrtf(discriminant)) / (2.0f * a_reduced);
+                        u_2 = (-b_reduced + sqrtf(discriminant)) / (2.0 * a_reduced);
+                        u_3 = (-b_reduced - sqrtf(discriminant)) / (2.0 * a_reduced);
                     }
 
                     // "Clamp" u to the range [u_left, u_right]
@@ -340,11 +301,11 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                     };
 
                     const std::array<double, 5> distances{
-                        distance(point_dbl, (us[0] * us[0] * a + us[0] * b + c)),
-                        distance(point_dbl, (us[1] * us[1] * a + us[1] * b + c)),
-                        distance(point_dbl, (us[2] * us[2] * a + us[2] * b + c)),
-                        distance(point_dbl, (us[3] * us[3] * a + us[3] * b + c)),
-                        distance(point_dbl, (us[4] * us[4] * a + us[4] * b + c))
+                        (point - (us[0] * us[0] * a + us[0] * b + c)).norm(),
+                        (point - (us[1] * us[1] * a + us[1] * b + c)).norm(),
+                        (point - (us[2] * us[2] * a + us[2] * b + c)).norm(),
+                        (point - (us[3] * us[3] * a + us[3] * b + c)).norm(),
+                        (point - (us[4] * us[4] * a + us[4] * b + c)).norm()
                     };
 
                     // Find smallest distance from the distances at the roots of the derivatives and the boundaries
@@ -371,8 +332,8 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                     const auto index = degree + static_cast<std::size_t>(std::floor((distance_it->first - u_begin) / delta));
 
                     auto u = distance_it->first;
-                    auto u_left = u - 0.5f * delta;
-                    auto u_right = u + 0.5f * delta;
+                    auto u_left = u - 0.5 * delta;
+                    auto u_right = u + 0.5 * delta;
 
                     // Loop a few times
                     bool good_match = false;
@@ -383,13 +344,13 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                         const auto position = compute_point(de_boor_points, knot_vector.cbegin(), knot_vector.cend(), this->Degree, u);
                         const auto tangent = compute_point(de_boor_points_first_derivative, knot_vector.cbegin() + 1, knot_vector.cend() - 1, this->Degree - 1, u);
 
-                        const auto direction = dot(tangent, point - position);
+                        const auto direction = tangent.dot(point - position);
 
-                        if (std::abs(direction) < 0.0001f)
+                        if (std::abs(direction) < 0.0001)
                         {
                             good_match = true;
                         }
-                        else if (direction > 0.0f)
+                        else if (direction > 0.0)
                         {
                             // In front of the plane
                             u_left = u;
@@ -400,11 +361,11 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
                             u_right = u;
                         }
 
-                        u = 0.5f * (u_left + u_right);
+                        u = 0.5 * (u_left + u_right);
                     }
 
                     distance_it->first = u;
-                    distance_it->second = distance(point, compute_point(de_boor_points, knot_vector.cbegin(), knot_vector.cend(), this->Degree, u));
+                    distance_it->second = (point - compute_point(de_boor_points, knot_vector.cbegin(), knot_vector.cend(), this->Degree, u)).norm();
                 }
             }
 
@@ -496,11 +457,11 @@ int b_spline::RequestData(vtkInformation*, vtkInformationVector** input_vector, 
     return 1;
 }
 
-std::array<float, 3> b_spline::compute_point(const std::vector<std::array<double, 3>>& de_boor_points,
-    std::vector<float>::const_iterator knot_vector, std::vector<float>::const_iterator knot_vector_end,
-    const std::size_t degree, float arc_parameter) const
+Eigen::Vector3d b_spline::compute_point(const std::vector<Eigen::Vector3d>& de_boor_points,
+    std::vector<double>::const_iterator knot_vector, std::vector<double>::const_iterator knot_vector_end,
+    const std::size_t degree, double arc_parameter) const
 {
-    std::array<float, 3> point{ 0.0f, 0.0f, 0.0f };
+    Eigen::Vector3d point{ 0.0, 0.0, 0.0 };
 
     if (arc_parameter >= access_at(knot_vector, de_boor_points.size()))
     {
@@ -519,31 +480,31 @@ std::array<float, 3> b_spline::compute_point(const std::vector<std::array<double
     return point;
 }
 
-float b_spline::basis_function(std::vector<float>::const_iterator knot_vector, std::vector<float>::const_iterator knot_vector_end,
-    const std::size_t de_boor_index, const std::size_t degree, const float u) const
+double b_spline::basis_function(std::vector<double>::const_iterator knot_vector, std::vector<double>::const_iterator knot_vector_end,
+    const std::size_t de_boor_index, const std::size_t degree, const double u) const
 {
     // 1 if u_i <= u < u_i+1, 0 otherwise
     if (degree == 0)
     {
-        return (access_at(knot_vector, de_boor_index) <= u && u < access_at(knot_vector, de_boor_index + 1)) ? 1.0f : 0.0f;
+        return (access_at(knot_vector, de_boor_index) <= u && u < access_at(knot_vector, de_boor_index + 1)) ? 1.0 : 0.0;
     }
 
     // Calculate recursively
     const auto Ni = basis_function(knot_vector, knot_vector_end, de_boor_index, degree - 1, u);
     const auto Nip1 = basis_function(knot_vector, knot_vector_end, de_boor_index + 1, degree - 1, u);
 
-    const auto part_1 = (access_at(knot_vector, de_boor_index + degree) - access_at(knot_vector, de_boor_index) == 0.0f) ? 0.0f :
+    const auto part_1 = (access_at(knot_vector, de_boor_index + degree) - access_at(knot_vector, de_boor_index) == 0.0) ? 0.0 :
         ((u - access_at(knot_vector, de_boor_index)) / (access_at(knot_vector, de_boor_index + degree) - access_at(knot_vector, de_boor_index)));
-    const auto part_2 = (access_at(knot_vector, de_boor_index + degree + 1) - access_at(knot_vector, de_boor_index + 1) == 0.0f) ? 0.0f :
+    const auto part_2 = (access_at(knot_vector, de_boor_index + degree + 1) - access_at(knot_vector, de_boor_index + 1) == 0.0) ? 0.0 :
         ((access_at(knot_vector, de_boor_index + degree + 1) - u) / (access_at(knot_vector, de_boor_index + degree + 1) - access_at(knot_vector, de_boor_index + 1)));
 
     return part_1 * Ni + part_2 * Nip1;
 }
 
-std::vector<std::array<double, 3>> b_spline::derive(const std::vector<std::array<double, 3>>& de_boor_points,
-    std::vector<float>::const_iterator knot_vector, std::vector<float>::const_iterator knot_vector_end, const std::size_t degree) const
+std::vector<Eigen::Vector3d> b_spline::derive(const std::vector<Eigen::Vector3d>& de_boor_points,
+    std::vector<double>::const_iterator knot_vector, std::vector<double>::const_iterator knot_vector_end, const std::size_t degree) const
 {
-    std::vector<std::array<double, 3>> derived_de_boor_points(de_boor_points.size() - 1);
+    std::vector<Eigen::Vector3d> derived_de_boor_points(de_boor_points.size() - 1);
 
     for (std::size_t index = 0; index < derived_de_boor_points.size(); ++index)
     {

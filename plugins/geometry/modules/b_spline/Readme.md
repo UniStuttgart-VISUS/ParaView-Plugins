@@ -8,8 +8,8 @@ The following inputs can be connected to the filter:
 
 | Input                     | Description                                                                               | Type          | Remark        |
 |---------------------------|-------------------------------------------------------------------------------------------|---------------|---------------|
-| Points                    | De Boor points defining the B-spline.                                                     | Poly data     |               |
-| Point                     | Point for which the closest corresponding point on the B-spline should be calculated.     | Poly data     | optional      |
+| Points                    | De Boor points defining the B-spline.                                                     | Point set     |               |
+| Point                     | Point for which the closest corresponding point on the B-spline should be calculated.     | Point set     | optional      |
 
 ## Parameters
 

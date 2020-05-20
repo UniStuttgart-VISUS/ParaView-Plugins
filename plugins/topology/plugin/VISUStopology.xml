@@ -96,6 +96,7 @@
                 </Documentation>
             </IntVectorProperty>
             <DoubleVectorProperty name="MaxAngle" label="Maximum angle" command="SetMaxAngle" number_of_elements="1" default_values="45.0">
+                <DoubleRangeDomain name="lambda_range" min="0.0" max="180.0" />
                 <Hints>
                     <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="AngleFilter" value="1" />
                 </Hints>

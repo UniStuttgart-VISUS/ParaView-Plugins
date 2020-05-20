@@ -13,6 +13,7 @@
 
 #include <array>
 #include <cmath>
+#include <iostream>
 
 vtkStandardNewMacro(trigonometric_function);
 
@@ -32,6 +33,19 @@ int trigonometric_function::RequestData(vtkInformation*, vtkInformationVector**,
     // Get output
     auto *out_info = output_vector->GetInformationObject(0);
     auto *output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    // Check parameters
+    if (this->NumPoints <= 0)
+    {
+        std::cerr << "The number of output points must be larger than zero" << std::endl;
+        return 0;
+    }
+
+    if (this->Length <= 0)
+    {
+        std::cerr << "The length must be larger than zero" << std::endl;
+        return 0;
+    }
 
     // Create parameterized "virtual" line starting at the origin, around which the trigonometric function is created
     const auto x_increment = this->Length / (this->NumPoints - 1);

@@ -4,9 +4,13 @@
 #include "vtkInformationVector.h"
 #include "vtkPolyDataAlgorithm.h"
 
-#include <array>
+#include "Eigen/Dense"
+
+#include <iterator>
 #include <sstream>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 class b_spline : public vtkPolyDataAlgorithm
@@ -36,17 +40,17 @@ private:
     void operator=(const b_spline&);
 
     /// Compute point on the B-Spline
-    std::array<float, 3> compute_point(const std::vector<std::array<double, 3>>& de_boor_points,
-        std::vector<float>::const_iterator knot_vector_begin, std::vector<float>::const_iterator knot_vector_end,
-        std::size_t degree, float arc_parameter) const;
+    Eigen::Vector3d compute_point(const std::vector<Eigen::Vector3d>& de_boor_points,
+        std::vector<double>::const_iterator knot_vector_begin, std::vector<double>::const_iterator knot_vector_end,
+        std::size_t degree, double arc_parameter) const;
 
     /// B-Spline basis function
-    float basis_function(std::vector<float>::const_iterator knot_vector_begin, std::vector<float>::const_iterator knot_vector_end,
-        std::size_t de_boor_index, std::size_t degree, float u) const;
+    double basis_function(std::vector<double>::const_iterator knot_vector_begin, std::vector<double>::const_iterator knot_vector_end,
+        std::size_t de_boor_index, std::size_t degree, double u) const;
 
     /// Create new control points representing the derivative of the B-Spline as new B-Spline
-    std::vector<std::array<double, 3>> derive(const std::vector<std::array<double, 3>>& de_boor_points,
-        std::vector<float>::const_iterator knot_vector_begin, std::vector<float>::const_iterator knot_vector_end, std::size_t degree) const;
+    std::vector<Eigen::Vector3d> derive(const std::vector<Eigen::Vector3d>& de_boor_points,
+        std::vector<double>::const_iterator knot_vector_begin, std::vector<double>::const_iterator knot_vector_end, std::size_t degree) const;
 
     /// Number of output points
     int NumberOfPoints;
