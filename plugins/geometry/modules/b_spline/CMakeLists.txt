@@ -9,4 +9,4 @@ if(NOT TARGET Eigen3::Eigen)
   message(FATAL_ERROR "Target for eigen3 not found")
 endif()
 
-target_link_libraries(${b_spline_target} PRIVATE Eigen3::Eigen)
+target_link_libraries(${b_spline_target} PUBLIC Eigen3::Eigen)
