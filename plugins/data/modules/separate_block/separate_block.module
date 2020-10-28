@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::separate_block
+LIBRARY_NAME
+  separate_block
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

@@ -8,6 +8,7 @@ The sources and filters are grouped into separate plugins, based on their functi
 
 | Plugin                            | Description                                                               |
 |-----------------------------------|---------------------------------------------------------------------------|
+| [data](#data-plugin)              | Data loading, saving and transformation.                                  |
 | [geometry](#geometry-plugin)      | Geometrical computations and modifications.                               |
 | [source](#source-plugin)          | Simple data sources for geometry and test dataset.                        |
 | [topology](#topology-plugin)      | Computation and extraction of topological features.                       |
@@ -15,6 +16,14 @@ The sources and filters are grouped into separate plugins, based on their functi
 ### Sources and filters
 
 The following plugins provide sources and filters.
+
+#### Data plugin
+
+This plugin provides filters for data loading and saving, as well for transformation between data types.
+
+| Source                                                                            | Description                                                                           |
+|-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| [SeparateBlock](plugins/data/modules/separate_block/Readme.md)                    | Extract a separate block in its native data structure.                                |
 
 #### Geometry plugin
 
@@ -57,6 +66,7 @@ The project uses CMake as build system. To configure the project run CMake. The 
 
 | Option                                | Description                                           | Default value     |
 |---------------------------------------|-------------------------------------------------------|-------------------|
+| PARAVIEW_PLUGIN_ENABLE_VISUSdata      | Enable the [data](#data-plugin) plugin.               | on                |
 | PARAVIEW_PLUGIN_ENABLE_VISUSgeometry  | Enable the [geometry](#geometry-plugin) plugin.       | on                |
 | PARAVIEW_PLUGIN_ENABLE_VISUSsource    | Enable the [source](#source-plugin) plugin.           | on                |
 | PARAVIEW_PLUGIN_ENABLE_VISUStopology  | Enable the [topology](#topology-plugin) plugin.       | on                |

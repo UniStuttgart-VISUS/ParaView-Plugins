@@ -1,0 +1,45 @@
+<ServerManagerConfiguration>
+    <ProxyGroup name="filters">
+        <!--
+
+        Separate Block.
+
+        Extract a separate block in its native data structure.
+
+        -->
+        <SourceProxy name="SeparateBlock" class="separate_block" label="Separate Block">
+            <Documentation>
+                Extract a separate block in its native data structure.
+            </Documentation>
+
+            <InputProperty name="MultiBlock" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkMultiBlockDataSet"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Multiblock data set.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="BlockID" command="SetBlockID" label="Block ID" number_of_elements="1" default_values="0">
+                <Documentation>
+                    ID of the block to extract.
+                </Documentation>
+            </IntVectorProperty>
+
+            <OutputPort name="Extracted Block" index="0" id="block">
+                <Documentation>
+                    The extracted block.
+                </Documentation>
+            </OutputPort>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+    </ProxyGroup>
+</ServerManagerConfiguration>
