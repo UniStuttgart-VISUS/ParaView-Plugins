@@ -2,7 +2,7 @@
 
 Extract a block from a multi block dataset, presenting it in its native data type.
 
-*Please note that the output datatype defaults to an unstructured grid, and therefore does not work for other datatypes when loading from a pvsm state.*
+*Please note that the output data type defaults to an unstructured grid, and therefore does not work properly for other data types when loading from a pvsm state.*
 
 ## Input
 
