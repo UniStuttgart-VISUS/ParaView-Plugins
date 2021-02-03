@@ -2,12 +2,42 @@
     <ProxyGroup name="filters">
         <!--
 
+        Grid to Polydata.
+
+        Convert an unstructured grid to polydata.
+
+        -->
+        <SourceProxy name="GridToPolydata" class="grid_to_polydata" label="Grid to polydata">
+            <Documentation>
+                Convert an unstructured grid to polydata.
+            </Documentation>
+
+            <InputProperty name="Grid" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkUnstructuredGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Unstructured grid containing cells.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Separate Block.
 
         Extract a separate block in its native data structure.
 
         -->
-        <SourceProxy name="SeparateBlock" class="separate_block" label="Separate Block">
+        <SourceProxy name="SeparateBlock" class="separate_block" label="Separate block">
             <Documentation>
                 Extract a separate block in its native data structure.
             </Documentation>

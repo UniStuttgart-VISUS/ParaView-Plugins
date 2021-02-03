@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::grid_to_polydata
+LIBRARY_NAME
+  grid_to_polydata
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

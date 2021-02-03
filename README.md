@@ -21,15 +21,16 @@ The following plugins provide sources and filters.
 
 This plugin provides filters for data loading and saving, as well for transformation between data types.
 
-| Source                                                                            | Description                                                                           |
+| Filter                                                                            | Description                                                                           |
 |-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| [SeparateBlock](plugins/data/modules/separate_block/Readme.md)                    | Extract a separate block in its native data structure.                                |
+| [Grid to polydata](plugins/data/modules/grid_to_polydata/Readme.md)               | Convert an unstructured grid to polydata.                                                      |
+| [Separate block](plugins/data/modules/separate_block/Readme.md)                   | Extract a separate block in its native data structure.                                |
 
 #### Geometry plugin
 
 This plugin provides filters for the computation and modification of geometrical structures, such as lines.
 
-| Source                                                                            | Description                                                                           |
+| Filter                                                                            | Description                                                                           |
 |-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | [B-Spline](plugins/geometry/modules/b_spline/Readme.md)                           | Create a B-spline from the input de Boor points.                                      |
 | [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)                 | Connect single lines into polylines, where points are shared.                         |
@@ -55,7 +56,7 @@ This plugin provides sources for geometry and test datasets.
 
 This plugin provides filters for the computation and extraction of topological features, mainly for vector fields of flow simulations.
 
-| Source                                                                                        | Description                                                                                                           |
+| Filter                                                                                        | Description                                                                                                           |
 |-----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
 | [Attachment/Separation lines](plugins/topology/modules/attachment_separation_lines/Readme.md) | Provide a scalar field on a two-dimensional surface, which zero-contour indicates attachment and separation lines.    |
 | [Filter lines](plugins/topology/modules/filter_lines/Readme.md)                               | Filter lines using differenc criteria, such as size and angle.                                                        |
