@@ -12,7 +12,7 @@
                 Create a B-spline from the input de Boor points.
             </Documentation>
 
-            <InputProperty name="Points" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -71,7 +71,7 @@
                 Connect lines to polylines.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -101,7 +101,7 @@
                 Connect points to form a polyline.
             </Documentation>
 
-            <InputProperty name="Points" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -131,7 +131,7 @@
                 Open closed lines by either removing the last segment or by duplicating the shared point.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -171,7 +171,7 @@
                 Creates a cell per point.
             </Documentation>
 
-            <InputProperty name="Points" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -201,7 +201,7 @@
                 Remove segments that are longer by a factor than the median segment of a polyline.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -237,7 +237,7 @@
                 Smooth lines by applying Gaussian or Taubin smoothing.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -285,7 +285,7 @@
                 Sort stored points, thus they appear in the order of occurance in the lines.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -315,7 +315,7 @@
                 Truncate lines by defining an offset and a number of points for the new lines.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>

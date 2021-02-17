@@ -12,7 +12,7 @@
                 Convert an unstructured grid to polydata.
             </Documentation>
 
-            <InputProperty name="Grid" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -42,7 +42,7 @@
                 Extract a separate block in its native data structure.
             </Documentation>
 
-            <InputProperty name="MultiBlock" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>

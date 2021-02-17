@@ -12,7 +12,7 @@
                 Extract the attachment and separation lines on two-dimensional surfaces.
             </Documentation>
 
-            <InputProperty name="Surface mesh" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
@@ -76,7 +76,7 @@
                 Filter for topological lines, such as attachment and separation lines.
             </Documentation>
 
-            <InputProperty name="Lines" command="SetInputConnection" port_index="0">
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
                 <ProxyGroupDomain name="groups">
                     <Group name="sources"/>
                     <Group name="filters"/>
