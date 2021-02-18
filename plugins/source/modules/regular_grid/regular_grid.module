@@ -1,0 +1,8 @@
+NAME
+  VISUSsource::regular_grid
+LIBRARY_NAME
+  regular_grid
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

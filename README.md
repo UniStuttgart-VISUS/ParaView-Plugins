@@ -23,7 +23,7 @@ This plugin provides filters for data loading and saving, as well for transforma
 
 | Filter                                                                            | Description                                                                           |
 |-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| [Grid to polydata](plugins/data/modules/grid_to_polydata/Readme.md)               | Convert an unstructured grid to polydata.                                                      |
+| [Grid to polydata](plugins/data/modules/grid_to_polydata/Readme.md)               | Convert an unstructured grid to polydata.                                             |
 | [Separate block](plugins/data/modules/separate_block/Readme.md)                   | Extract a separate block in its native data structure.                                |
 
 #### Geometry plugin
@@ -50,6 +50,7 @@ This plugin provides sources for geometry and test datasets.
 |-----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | [Helix](plugins/source/modules/helix/Readme.md)                                   | Polyline in form of a simple helix with user-defined length, radius and number of windings.   |
 | [Logarithmic spiral](plugins/source/modules/logarithmic_spiral/Readme.md)         | Polyline defined by the logarithmic spiral function.                                          |
+| [Regular grid](plugins/source/modules/regular_grid/Readme.md)                     | Empty regular grid, defined by number of cells, origin and cell sizes.                        |
 | [Trigonometric function](plugins/source/modules/trigonometric_function/Readme.md) | Polyline defined by a trigonometric function.                                                 |
 
 #### Topology plugin
