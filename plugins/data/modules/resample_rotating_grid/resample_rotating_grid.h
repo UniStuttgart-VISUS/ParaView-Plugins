@@ -13,11 +13,15 @@ public:
     static resample_rotating_grid* New();
     vtkTypeMacro(resample_rotating_grid, vtkRectilinearGridAlgorithm);
 
-    vtkSetStringMacro(RotationColumn);
-    vtkGetStringMacro(RotationColumn);
+    vtkSetStringMacro(RotationAngle);
+    vtkGetStringMacro(RotationAngle);
+
+    vtkSetStringMacro(RotationalVelocity);
+    vtkGetStringMacro(RotationalVelocity);
 
     vtkDataArraySelection* GetScalarArraySelection();
     vtkDataArraySelection* GetVectorArraySelection();
+    vtkDataArraySelection* GetVelocityArraySelection();
     vtkDataArraySelection* GetPassPointArraySelection();
     vtkDataArraySelection* GetPassCellArraySelection();
 
@@ -35,10 +39,12 @@ private:
     resample_rotating_grid(const resample_rotating_grid&);
     void operator=(const resample_rotating_grid&);
 
-    char* RotationColumn;
+    char* RotationAngle;
+    char* RotationalVelocity;
 
     vtkSmartPointer<vtkDataArraySelection> scalar_array_selection;
     vtkSmartPointer<vtkDataArraySelection> vector_array_selection;
+    vtkSmartPointer<vtkDataArraySelection> velocity_array_selection;
     vtkSmartPointer<vtkDataArraySelection> pass_point_array_selection;
     vtkSmartPointer<vtkDataArraySelection> pass_cell_array_selection;
 };

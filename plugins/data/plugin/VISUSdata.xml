@@ -72,14 +72,24 @@
                 </Documentation>
             </InputProperty>
 
-            <StringVectorProperty name="RotationColumn" label="Rotation (angle)" command="SetRotationColumn" number_of_elements="1">
+            <StringVectorProperty name="RotationAngle" label="Rotation (sum of angles)" command="SetRotationAngle" number_of_elements="1">
                 <ArrayListDomain name="array_list" input_domain_name="rotation_array">
                     <RequiredProperties>
                         <Property name="Rotation" function="Input" />
                     </RequiredProperties>
                 </ArrayListDomain>
                 <Documentation>
-                    Table column containing angle information for rotation.
+                    Table column containing angle information for the grid rotation.
+                </Documentation>
+            </StringVectorProperty>
+            <StringVectorProperty name="RotationalVelocity" label="Angular frequency" command="SetRotationalVelocity" number_of_elements="1">
+                <ArrayListDomain name="array_list" input_domain_name="rotation_array">
+                    <RequiredProperties>
+                        <Property name="Rotation" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Table column containing the angular frequency for removing the rotational velocity part.
                 </Documentation>
             </StringVectorProperty>
 
@@ -104,6 +114,19 @@
                 </ArrayListDomain>
                 <Documentation>
                     Resample arrays containing vector values.
+                </Documentation>
+                <Hints>
+                    <ArraySelectionWidget icon_type="point"/>
+                </Hints>
+            </StringVectorProperty>
+            <StringVectorProperty name="VelocityArrays" command="GetVelocityArraySelection" number_of_elements_per_command="1" repeat_command="1" si_class="vtkSIDataArraySelectionProperty">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="vector_arrays">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Resample arrays containing velocities, for which the rotational part is removed.
                 </Documentation>
                 <Hints>
                     <ArraySelectionWidget icon_type="point"/>
