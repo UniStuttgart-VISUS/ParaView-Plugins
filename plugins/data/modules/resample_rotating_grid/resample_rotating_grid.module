@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::resample_rotating_grid
+LIBRARY_NAME
+  resample_rotating_grid
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

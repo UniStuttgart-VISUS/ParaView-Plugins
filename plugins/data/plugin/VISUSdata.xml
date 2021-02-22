@@ -32,6 +32,117 @@
 
         <!--
 
+        Resample rotating grid.
+
+        Rotate input grid and resample it on the original grid.
+
+        -->
+        <SourceProxy name="ResampleRotatingGrid" class="resample_rotating_grid" label="Resample rotating grid">
+            <Documentation>
+                Convert an unstructured grid to polydata.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkRectilinearGrid"/>
+                </DataTypeDomain>
+                <InputArrayDomain attribute_type="point" name="scalar_arrays" number_of_components="1" optional="1"/>
+                <InputArrayDomain attribute_type="point" name="vector_arrays" number_of_components="3" optional="1"/>
+                <InputArrayDomain attribute_type="point" name="point_arrays" optional="1"/>
+                <InputArrayDomain attribute_type="cell" name="cell_arrays" optional="1"/>
+                <Documentation>
+                    Rectilinear grid that will be resampled.
+                </Documentation>
+            </InputProperty>
+            <InputProperty name="Rotation" command="SetInputConnection" port_index="1">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkTable"/>
+                </DataTypeDomain>
+                <InputArrayDomain attribute_type="row" name="rotation_array" number_of_components="1"/>
+                <Documentation>
+                    Table that contains information on the rotation.
+                </Documentation>
+            </InputProperty>
+
+            <StringVectorProperty name="RotationColumn" label="Rotation (angle)" command="SetRotationColumn" number_of_elements="1">
+                <ArrayListDomain name="array_list" input_domain_name="rotation_array">
+                    <RequiredProperties>
+                        <Property name="Rotation" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Table column containing angle information for rotation.
+                </Documentation>
+            </StringVectorProperty>
+
+            <StringVectorProperty name="ScalarArrays" command="GetScalarArraySelection" number_of_elements_per_command="1" repeat_command="1" si_class="vtkSIDataArraySelectionProperty">
+                <ArrayListDomain name="array_list" attribute_type="Scalars" input_domain_name="scalar_arrays">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Resample arrays containing scalar values.
+                </Documentation>
+                <Hints>
+                    <ArraySelectionWidget icon_type="point"/>
+                </Hints>
+            </StringVectorProperty>
+            <StringVectorProperty name="VectorArrays" command="GetVectorArraySelection" number_of_elements_per_command="1" repeat_command="1" si_class="vtkSIDataArraySelectionProperty">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="vector_arrays">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Resample arrays containing vector values.
+                </Documentation>
+                <Hints>
+                    <ArraySelectionWidget icon_type="point"/>
+                </Hints>
+            </StringVectorProperty>
+            <StringVectorProperty name="PassPointArrays" command="GetPassPointArraySelection" number_of_elements_per_command="1" repeat_command="1" si_class="vtkSIDataArraySelectionProperty">
+                <ArrayListDomain name="array_list" input_domain_name="point_arrays">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Pass through point arrays without resampling.
+                </Documentation>
+                <Hints>
+                    <ArraySelectionWidget icon_type="point"/>
+                </Hints>
+            </StringVectorProperty>
+            <StringVectorProperty name="PassCellArrays" command="GetPassCellArraySelection" number_of_elements_per_command="1" repeat_command="1" si_class="vtkSIDataArraySelectionProperty">
+                <ArrayListDomain name="array_list" input_domain_name="cell_arrays">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Pass through cell arrays without resampling.
+                </Documentation>
+                <Hints>
+                    <ArraySelectionWidget icon_type="cell"/>
+                </Hints>
+            </StringVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Separate Block.
 
         Extract a separate block in its native data structure.
