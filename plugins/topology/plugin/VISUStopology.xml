@@ -31,7 +31,7 @@
             <StringVectorProperty name="Normal" label="Normal" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="0">
                 <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="normal_array">
                     <RequiredProperties>
-                        <Property name="Surface mesh" function="Input" />
+                        <Property name="Input" function="Input" />
                     </RequiredProperties>
                 </ArrayListDomain>
                 <Documentation>
@@ -41,7 +41,7 @@
             <StringVectorProperty name="Velocity" label="Velocity" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="1">
                 <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="velocity_array">
                     <RequiredProperties>
-                        <Property name="Surface mesh" function="Input" />
+                        <Property name="Input" function="Input" />
                     </RequiredProperties>
                 </ArrayListDomain>
                 <Documentation>
@@ -51,7 +51,7 @@
             <StringVectorProperty name="Jacobian" label="Jacobian" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="2">
                 <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="jacobian_array">
                     <RequiredProperties>
-                        <Property name="Surface mesh" function="Input" />
+                        <Property name="Input" function="Input" />
                     </RequiredProperties>
                 </ArrayListDomain>
                 <Documentation>
@@ -108,7 +108,7 @@
                 <InputArrayDomain attribute_type="point" name="vector_array" number_of_components="3"/>
                 <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="vector_array">
                     <RequiredProperties>
-                        <Property name="Lines" function="Input" />
+                        <Property name="Input" function="Input" />
                     </RequiredProperties>
                 </ArrayListDomain>
                 <Hints>
