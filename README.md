@@ -24,6 +24,8 @@ This plugin provides filters for data loading and saving, as well for transforma
 | Filter                                                                            | Description                                                                           |
 |-----------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | [Grid to polydata](plugins/data/modules/grid_to_polydata/Readme.md)               | Convert an unstructured grid to polydata.                                             |
+| [Resample rotating grid](plugins/data/modules/resample_rotating_grid/Readme.md)   | Given a rotation around the z-axis, the grid is resampled as if it did not rotate.    |
+| [Sample points to grid](plugins/data/modules/sample_points_to_grid/Readme.md)     | Using nearest neighbor interpolation, sample points to grid nodes.                    |
 | [Separate block](plugins/data/modules/separate_block/Readme.md)                   | Extract a separate block in its native data structure.                                |
 
 #### Geometry plugin
