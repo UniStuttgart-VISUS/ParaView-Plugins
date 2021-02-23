@@ -2,6 +2,48 @@
     <ProxyGroup name="filters">
         <!--
 
+        Fix errors in grids.
+
+        Given an error estimation, (re-)interpolate values at erroneous nodes.
+
+        -->
+        <SourceProxy name="FixErrorsInGrids" class="fix_errors_in_grids" label="Fix errors in grids">
+            <Documentation>
+                Given an error estimation, (re-)interpolate values at erroneous nodes.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkRectilinearGrid"/>
+                </DataTypeDomain>
+                <InputArrayDomain attribute_type="point" name="error_array"/>
+                <Documentation>
+                    Rectilinear grid with erroneous values at nodes.
+                </Documentation>
+            </InputProperty>
+
+            <StringVectorProperty name="Errors" label="Errors" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0" default_values="0">
+                <ArrayListDomain name="array_list" attribute_type="Scalars" input_domain_name="error_array">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Error estimation.
+                </Documentation>
+            </StringVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Grid to Polydata.
 
         Convert an unstructured grid to polydata.
