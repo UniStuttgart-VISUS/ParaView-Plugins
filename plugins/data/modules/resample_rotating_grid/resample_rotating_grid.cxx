@@ -6,10 +6,10 @@
 #include "vtkDataArray.h"
 #include "vtkDataArraySelection.h"
 #include "vtkFieldData.h"
-#include "vtkPointData.h"
-#include "vtkObjectFactory.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
+#include "vtkObjectFactory.h"
+#include "vtkPointData.h"
 #include "vtkRectilinearGrid.h"
 #include "vtkSmartPointer.h"
 #include "vtkStreamingDemandDrivenPipeline.h"
@@ -19,6 +19,8 @@
 
 #include <array>
 #include <cmath>
+#include <iostream>
+#include <utility>
 #include <vector>
 
 vtkStandardNewMacro(resample_rotating_grid);
