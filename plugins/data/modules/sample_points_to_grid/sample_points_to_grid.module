@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::sample_points_to_grid
+LIBRARY_NAME
+  sample_points_to_grid
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

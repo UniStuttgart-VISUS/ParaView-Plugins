@@ -39,7 +39,7 @@
         -->
         <SourceProxy name="ResampleRotatingGrid" class="resample_rotating_grid" label="Resample rotating grid">
             <Documentation>
-                Convert an unstructured grid to polydata.
+                Rotate input grid and resample it on the original grid.
             </Documentation>
 
             <InputProperty name="Input" command="SetInputConnection" port_index="0">
@@ -158,6 +158,54 @@
                     <ArraySelectionWidget icon_type="cell"/>
                 </Hints>
             </StringVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
+        Sample points to grid.
+
+        Using nearest neighbor interpolation, sample points to grid nodes.
+
+        -->
+        <SourceProxy name="SamplePointsToGrid" class="sample_points_to_grid" label="Sample points to grid">
+            <Documentation>
+                Using nearest neighbor interpolation, sample points to grid nodes.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPointSet"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Input points.
+                </Documentation>
+            </InputProperty>
+            <InputProperty name="Grid" command="SetInputConnection" port_index="1">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkRectilinearGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Grid for whose nodes the resampling is done.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="NumberOfBins" command="SetNumberOfBins" label="Number of bins" number_of_elements="1" default_values="10" panel_visibility="advanced">
+                <Documentation>
+                    Number of bins for nearest neighbor search per spatial dimension.
+                </Documentation>
+            </IntVectorProperty>
 
             <Hints>
                 <ShowInMenu category="VISUS Data"/>
