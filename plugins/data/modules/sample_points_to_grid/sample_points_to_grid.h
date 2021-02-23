@@ -2,10 +2,8 @@
 
 #include "vtkRectilinearGridAlgorithm.h"
 
-#include "vtkDataArraySelection.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
-#include "vtkSmartPointer.h"
 
 class VTK_EXPORT sample_points_to_grid : public vtkRectilinearGridAlgorithm
 {

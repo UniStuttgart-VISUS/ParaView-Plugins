@@ -82,7 +82,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     }
 
     // Create coarse regular grid and use as for binning input points
-    long long num_bins = this->NumberOfBins;
+    const long long num_bins = this->NumberOfBins;
 
     std::array<double, 6> bounds;
     grid->GetBounds(bounds.data());
@@ -189,6 +189,8 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
         return static_cast<vtkIdType>(i + num_x_nodes * (j + num_y_nodes * k));
     };
 
+    std::size_t num_bad_nodes = 0;
+
     for (int k = extent[4]; k <= extent[5]; ++k)
     {
         const auto z = z_coords->GetComponent(k, 0);
@@ -255,6 +257,13 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                         }
                     }
 
+                    if (closest_point == -1)
+                    {
+                        ++num_bad_nodes;
+
+                        continue;
+                    }
+
                     // Copy properties of nearest neighbor
                     for (int a = 0; a < output->GetPointData()->GetNumberOfArrays(); ++a)
                     {
@@ -269,6 +278,11 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                 }
             }
         }
+    }
+
+    if (num_bad_nodes > 0)
+    {
+        std::cerr << "Could not find closest points for " << num_bad_nodes << " nodes." << std::endl;
     }
 
     // Pass field data and add error array
