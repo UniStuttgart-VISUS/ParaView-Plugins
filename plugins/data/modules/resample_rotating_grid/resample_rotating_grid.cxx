@@ -6,6 +6,7 @@
 #include "vtkDataArray.h"
 #include "vtkDataArraySelection.h"
 #include "vtkFieldData.h"
+#include "vtkIdTypeArray.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkObjectFactory.h"
@@ -116,6 +117,12 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
     auto output = vtkRectilinearGrid::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
 
     output->CopyStructure(input);
+
+    // Create array indicating validity of the node
+    auto validity = vtkSmartPointer<vtkIdTypeArray>::New();
+    validity->SetName("Validity");
+    validity->SetNumberOfComponents(1);
+    validity->SetNumberOfTuples(input->GetNumberOfPoints());
 
     // Get user-selected data arrays
     std::vector<std::pair<vtkSmartPointer<vtkDataArray>, vtkDataArray*>> scalars, vectors, velocities;
@@ -255,39 +262,30 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
 
                 // Variables for interpolation
                 int sub_id;
-                std::array<double, 3> p_coords;
-                std::array<double, 8> weights;
+                std::array<double, 3> p_coords{};
+                std::array<double, 8> weights{};
 
-                // Resample scalar arrays
-                for (auto& scalar_array : scalars)
+                const auto cell = input->FindAndGetCell(rotated_coords.data(), nullptr, 0, 0.00001, sub_id, p_coords.data(), weights.data());
+
+                if (cell != nullptr)
                 {
-                    const auto cell = input->FindAndGetCell(rotated_coords.data(), nullptr, 0, 0.00001, sub_id, p_coords.data(), weights.data());
+                    validity->SetValue(index, 1);
 
-                    scalar_array.first->SetComponent(index, 0, 0.0);
-
-                    if (cell != nullptr)
+                    // Resample scalar arrays
+                    for (auto& scalar_array : scalars)
                     {
                         scalar_array.first->InterpolateTuple(index, cell->GetPointIds(), scalar_array.second, weights.data());
                     }
-                }
 
-                // Resample vector arrays
-                for (auto& vector_array : vectors)
-                {
-                    if (vector_array.first->GetNumberOfComponents() != 3)
+                    // Resample vector arrays
+                    for (auto& vector_array : vectors)
                     {
-                        std::cerr << "Vectors must be three-dimensional." << std::endl;
-                        return 0;
-                    }
+                        if (vector_array.first->GetNumberOfComponents() != 3)
+                        {
+                            std::cerr << "Vectors must be three-dimensional." << std::endl;
+                            return 0;
+                        }
 
-                    const auto cell = input->FindAndGetCell(rotated_coords.data(), nullptr, 0, 0.00001, sub_id, p_coords.data(), weights.data());
-
-                    vector_array.first->SetComponent(index, 0, 0.0);
-                    vector_array.first->SetComponent(index, 1, 0.0);
-                    vector_array.first->SetComponent(index, 2, 0.0);
-
-                    if (cell != nullptr)
-                    {
                         vector_array.first->InterpolateTuple(index, cell->GetPointIds(), vector_array.second, weights.data());
 
                         // Apply Jacobian of the transformation
@@ -302,25 +300,16 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
                         vector_array.first->SetComponent(index, 1, vec[1]);
                         vector_array.first->SetComponent(index, 2, vec[2]);
                     }
-                }
 
-                // Resample velocities
-                for (auto& velocity_array : velocities)
-                {
-                    if (velocity_array.first->GetNumberOfComponents() != 3)
+                    // Resample velocities
+                    for (auto& velocity_array : velocities)
                     {
-                        std::cerr << "Vectors must be three-dimensional." << std::endl;
-                        return 0;
-                    }
+                        if (velocity_array.first->GetNumberOfComponents() != 3)
+                        {
+                            std::cerr << "Vectors must be three-dimensional." << std::endl;
+                            return 0;
+                        }
 
-                    const auto cell = input->FindAndGetCell(rotated_coords.data(), nullptr, 0, 0.00001, sub_id, p_coords.data(), weights.data());
-
-                    velocity_array.first->SetComponent(index, 0, 0.0);
-                    velocity_array.first->SetComponent(index, 1, 0.0);
-                    velocity_array.first->SetComponent(index, 2, 0.0);
-
-                    if (cell != nullptr)
-                    {
                         velocity_array.first->InterpolateTuple(index, cell->GetPointIds(), velocity_array.second, weights.data());
 
                         // Remove rotational velocity part and then apply Jacobian of the transformation
@@ -335,6 +324,30 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
                         velocity_array.first->SetComponent(index, 0, vec[0]);
                         velocity_array.first->SetComponent(index, 1, vec[1]);
                         velocity_array.first->SetComponent(index, 2, vec[2]);
+                    }
+                }
+                else
+                {
+                    validity->SetValue(index, 0);
+
+                    // Set zero
+                    for (auto& scalar_array : scalars)
+                    {
+                        scalar_array.first->SetComponent(index, 0, 0.0);
+                    }
+
+                    for (auto& vector_array : vectors)
+                    {
+                        vector_array.first->SetComponent(index, 0, 0.0);
+                        vector_array.first->SetComponent(index, 1, 0.0);
+                        vector_array.first->SetComponent(index, 2, 0.0);
+                    }
+
+                    for (auto& velocity_array : velocities)
+                    {
+                        velocity_array.first->SetComponent(index, 0, 0.0);
+                        velocity_array.first->SetComponent(index, 1, 0.0);
+                        velocity_array.first->SetComponent(index, 2, 0.0);
                     }
                 }
             }
@@ -371,6 +384,8 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
     {
         output->GetFieldData()->AddArray(pass_through_array);
     }
+
+    output->GetPointData()->AddArray(validity);
 
     return 1;
 }
