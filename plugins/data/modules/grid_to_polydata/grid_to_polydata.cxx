@@ -1,5 +1,7 @@
 #include "grid_to_polydata.h"
 
+#include "common/checks.h"
+
 #include "vtkObjectFactory.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
@@ -56,9 +58,13 @@ int grid_to_polydata::RequestData(vtkInformation* vtkNotUsed(request), vtkInform
     auto in_info = input_vector[0]->GetInformationObject(0);
     auto input = vtkUnstructuredGrid::SafeDownCast(in_info->Get(vtkDataObject::DATA_OBJECT()));
 
+    __check_not_null_ret(input, "Input is not an unstructured grid.");
+
     // Get output
     auto out_info = output_vector->GetInformationObject(0);
     auto output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    __check_not_null_ret(output, "Output is not a polydata object.");
 
     // Copy points
     auto new_points = vtkSmartPointer<vtkPoints>::New();

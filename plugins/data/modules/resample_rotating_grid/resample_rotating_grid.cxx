@@ -1,5 +1,8 @@
 #include "resample_rotating_grid.h"
 
+#include "common/checks.h"
+#include "common/pointers.h"
+
 #include "vtkCell.h"
 #include "vtkCellData.h"
 #include "vtkCommand.h"
@@ -50,7 +53,11 @@ resample_rotating_grid::resample_rotating_grid()
     this->pass_cell_array_selection->AddObserver(vtkCommand::ModifiedEvent, this, &vtkObject::Modified);
 }
 
-resample_rotating_grid::~resample_rotating_grid() {}
+resample_rotating_grid::~resample_rotating_grid()
+{
+    __delete_ptr(this->RotationAngle);
+    __delete_ptr(this->RotationalVelocity);
+}
 
 vtkDataArraySelection* resample_rotating_grid::GetScalarArraySelection()
 {
@@ -109,12 +116,18 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
     auto in_info = input_vector[0]->GetInformationObject(0);
     auto input = vtkRectilinearGrid::SafeDownCast(in_info->Get(vtkDataObject::DATA_OBJECT()));
 
+    __check_not_null_ret(input, "Input on port 0 is not a rectilinear grid.");
+
     auto in_table = input_vector[1]->GetInformationObject(0);
     auto table = vtkTable::SafeDownCast(in_table->Get(vtkDataObject::DATA_OBJECT()));
+
+    __check_not_null_ret(table, "Input on port 1 is not a table.");
 
     // Get output
     auto out_info = output_vector->GetInformationObject(0);
     auto output = vtkRectilinearGrid::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    __check_not_null_ret(output, "Output is not a rectilinear grid.");
 
     output->CopyStructure(input);
 
@@ -201,29 +214,20 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
     }
 
     // Get rotation information from table
-    if (this->RotationAngle == nullptr || this->RotationalVelocity == nullptr)
-    {
-        std::cerr << "Column not set." << std::endl;
-        return 0;
-    }
+    __check_not_null_ret(this->RotationAngle, "Column not set for rotation angle.");
+    __check_not_null_ret(this->RotationalVelocity, "Column not set for angular frequency.");
 
     auto rotation_column = table->GetColumnByName(this->RotationAngle);
-    auto velocity_column = table->GetColumnByName(this->RotationalVelocity);
+    auto frequency_column = table->GetColumnByName(this->RotationalVelocity);
 
-    if (rotation_column == nullptr || velocity_column == nullptr)
-    {
-        std::cerr << "Column not found." << std::endl;
-        return 0;
-    }
+    __check_not_null_ret(rotation_column, "Column not found for rotation angle.");
+    __check_not_null_ret(frequency_column, "Column not found for angular frequency.");
 
-    if (rotation_column->GetNumberOfValues() == 0 || velocity_column->GetNumberOfValues() == 0)
-    {
-        std::cerr << "Column does not have an entry." << std::endl;
-        return 0;
-    }
+    __check_not_empty_ret(rotation_column, "Column for rotation angle does not have an entry.", 0);
+    __check_not_empty_ret(frequency_column, "Column for angular frequency does not have an entry.", 0);
 
     const auto angle = rotation_column->GetVariantValue(0).ToDouble();
-    const auto omega = velocity_column->GetVariantValue(0).ToDouble();
+    const auto omega = frequency_column->GetVariantValue(0).ToDouble();
 
     // Create rotation matrix
     Eigen::Matrix3d rotation, inverse_rotation;
@@ -236,7 +240,7 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
     inverse_rotation = rotation.inverse();
 
     // Get nodes of output grid as points
-    std::array<int, 6> extent;
+    std::array<int, 6> extent{};
     output->GetExtent(extent.data());
 
     auto x_coords = output->GetXCoordinates();
@@ -258,14 +262,15 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
                     z_coords->GetComponent(k, 0)
                 );
 
-                Eigen::Vector3d rotated_coords = rotation * coords;
+                const Eigen::Vector3d rotated_coords = rotation * coords;
 
                 // Variables for interpolation
                 int sub_id;
                 std::array<double, 3> p_coords{};
                 std::array<double, 8> weights{};
 
-                const auto cell = input->FindAndGetCell(rotated_coords.data(), nullptr, 0, 0.00001, sub_id, p_coords.data(), weights.data());
+                const auto cell = input->FindAndGetCell(const_cast<Eigen::Vector3d&>(rotated_coords).data(),
+                    nullptr, 0, 0.00001, sub_id, p_coords.data(), weights.data());
 
                 if (cell != nullptr)
                 {
@@ -280,11 +285,7 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
                     // Resample vector arrays
                     for (auto& vector_array : vectors)
                     {
-                        if (vector_array.first->GetNumberOfComponents() != 3)
-                        {
-                            std::cerr << "Vectors must be three-dimensional." << std::endl;
-                            return 0;
-                        }
+                        __check_num_components_ret(vector_array.first, 3, "Vectors must be three-dimensional.");
 
                         vector_array.first->InterpolateTuple(index, cell->GetPointIds(), vector_array.second, weights.data());
 
@@ -304,11 +305,7 @@ int resample_rotating_grid::RequestData(vtkInformation* vtkNotUsed(request), vtk
                     // Resample velocities
                     for (auto& velocity_array : velocities)
                     {
-                        if (velocity_array.first->GetNumberOfComponents() != 3)
-                        {
-                            std::cerr << "Vectors must be three-dimensional." << std::endl;
-                            return 0;
-                        }
+                        __check_num_components_ret(velocity_array.first, 3, "Velocities must be three-dimensional.");
 
                         velocity_array.first->InterpolateTuple(index, cell->GetPointIds(), velocity_array.second, weights.data());
 

@@ -1,5 +1,7 @@
 #include "separate_block.h"
 
+#include "common/checks.h"
+
 #include "vtkDataObject.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
@@ -55,6 +57,8 @@ int separate_block::RequestDataObject(vtkInformation*, vtkInformationVector** in
     // Get input block
     auto in_info = input_vector[0]->GetInformationObject(0);
     auto input = vtkMultiBlockDataSet::SafeDownCast(in_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    __check_not_null_ret(input, "Input is not a multiblock dataset.");
 
     // If there is no block or the specified block does not exist, create a dummy object
     // This step is necessary to allow loading from a state
@@ -157,9 +161,13 @@ int separate_block::RequestData(vtkInformation*, vtkInformationVector** input_ve
     auto in_info = input_vector[0]->GetInformationObject(0);
     auto input = vtkMultiBlockDataSet::SafeDownCast(in_info->Get(vtkDataObject::DATA_OBJECT()));
 
+    __check_not_null_ret(input, "Input is not a multiblock dataset.");
+
     // Get output
     auto out_info = output_vector->GetInformationObject(0);
     auto output = out_info->Get(vtkDataObject::DATA_OBJECT());
+
+    __check_not_null_ret(output, "No output object was found.");
 
     // Extract requested block
     if (this->BlockID < 0 || this->BlockID >= static_cast<int>(input->GetNumberOfBlocks()))

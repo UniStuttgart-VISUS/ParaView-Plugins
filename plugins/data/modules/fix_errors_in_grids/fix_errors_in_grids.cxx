@@ -55,9 +55,13 @@ int fix_errors_in_grids::RequestData(vtkInformation*, vtkInformationVector** inp
     auto in_grid = input_vector[0]->GetInformationObject(0);
     auto grid = vtkRectilinearGrid::SafeDownCast(in_grid->Get(vtkDataObject::DATA_OBJECT()));
 
+    __check_not_null_ret(grid, "Input is not a rectilinear grid.");
+
     // Get output
     auto out_info = output_vector->GetInformationObject(0);
     auto output = vtkRectilinearGrid::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+
+    __check_not_null_ret(output, "Output is not a rectilinear grid.");
 
     output->DeepCopy(grid);
 
@@ -103,7 +107,7 @@ int fix_errors_in_grids::RequestData(vtkInformation*, vtkInformationVector** inp
     const auto error_threshold = min_error + 3 * (median_error - min_error);
 
     // Correct values
-    std::array<int, 6> extent;
+    std::array<int, 6> extent{};
     grid->GetExtent(extent.data());
 
     auto x_coords = grid->GetXCoordinates();

@@ -1,5 +1,7 @@
 #include "sample_points_to_grid.h"
 
+#include "common/checks.h"
+
 #include "vtkCellData.h"
 #include "vtkDoubleArray.h"
 #include "vtkFieldData.h"
@@ -65,26 +67,28 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     auto in_points = input_vector[0]->GetInformationObject(0);
     auto points = vtkPointSet::SafeDownCast(in_points->Get(vtkDataObject::DATA_OBJECT()));
 
+    __check_not_null_ret(points, "Input on port 0 is not a point set.");
+
     auto in_grid = input_vector[1]->GetInformationObject(0);
     auto grid = vtkRectilinearGrid::SafeDownCast(in_grid->Get(vtkDataObject::DATA_OBJECT()));
+
+    __check_not_null_ret(grid, "Input on port 1 is not a rectilinear grid.");
 
     // Get output
     auto out_info = output_vector->GetInformationObject(0);
     auto output = vtkRectilinearGrid::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
 
+    __check_not_null_ret(output, "Output is not a rectilinear grid.");
+
     output->CopyStructure(grid);
 
     // Check parameters
-    if (this->NumberOfBins < 3)
-    {
-        std::cerr << "Number of bins must be larger than 2." << std::endl;
-        return 0;
-    }
+    __check_param_min_ret(this->NumberOfBins, 3, "Number of bins must be larger than 2.", 0);
 
     // Create coarse regular grid and use as for binning input points
     const long long num_bins = this->NumberOfBins;
 
-    std::array<double, 6> bounds;
+    std::array<double, 6> bounds{};
     grid->GetBounds(bounds.data());
 
     const auto x_width = bounds[1] - bounds[0];
@@ -173,7 +177,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     }
 
     // For each node of the grid, find closest point and use its value
-    std::array<int, 6> extent;
+    std::array<int, 6> extent{};
     grid->GetExtent(extent.data());
 
     auto x_coords = grid->GetXCoordinates();
