@@ -88,9 +88,9 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     __check_param_min_ret(this->NumberOfBins[2], 1, "Number of bins must be at least 1.", 0);
 
     // Create coarse regular grid and use as for binning input points
-    const long long x_num_bins = this->NumberOfBins[0] + 2;
-    const long long y_num_bins = this->NumberOfBins[1] + 2;
-    const long long z_num_bins = this->NumberOfBins[2] + 2;
+    const auto x_num_bins = static_cast<long long>(this->NumberOfBins[0]) + 2;
+    const auto y_num_bins = static_cast<long long>(this->NumberOfBins[1]) + 2;
+    const auto z_num_bins = static_cast<long long>(this->NumberOfBins[2]) + 2;
 
     std::array<double, 6> bounds{};
     grid->GetBounds(bounds.data());
@@ -227,19 +227,19 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                     {
                         const auto z_offset = r * x_num_bins * y_num_bins;
 
-                        if (std::get<3>(bin_index) + z_offset >= 0 && std::get<3>(bin_index) + z_offset < z_num_bins)
+                        if (std::get<3>(bin_index) + r >= 0 && static_cast<long long>(std::get<3>(bin_index)) + r < z_num_bins)
                         {
                             for (int q = -1; q <= 1; ++q)
                             {
                                 const auto y_offset = q * x_num_bins;
 
-                                if (std::get<2>(bin_index) + y_offset >= 0 && std::get<2>(bin_index) + y_offset < y_num_bins)
+                                if (std::get<2>(bin_index) + q >= 0 && static_cast<long long>(std::get<2>(bin_index)) + q < y_num_bins)
                                 {
                                     for (int p = -1; p <= 1; ++p)
                                     {
                                         const auto x_offset = static_cast<long long>(p);
 
-                                        if (std::get<1>(bin_index) + x_offset >= 0 && std::get<1>(bin_index) + x_offset < x_num_bins
+                                        if (std::get<1>(bin_index) + p >= 0 && static_cast<long long>(std::get<1>(bin_index)) + p < x_num_bins
                                             && (r != 0 || q != 0 || p != 0))
                                         {
                                             cells.push_back(std::get<0>(bin_index) + x_offset + y_offset + z_offset);
