@@ -83,10 +83,14 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     output->CopyStructure(grid);
 
     // Check parameters
-    __check_param_min_ret(this->NumberOfBins, 3, "Number of bins must be larger than 2.", 0);
+    __check_param_min_ret(this->NumberOfBins[0], 1, "Number of bins must be at least 1.", 0);
+    __check_param_min_ret(this->NumberOfBins[1], 1, "Number of bins must be at least 1.", 0);
+    __check_param_min_ret(this->NumberOfBins[2], 1, "Number of bins must be at least 1.", 0);
 
     // Create coarse regular grid and use as for binning input points
-    const long long num_bins = this->NumberOfBins;
+    const long long x_num_bins = this->NumberOfBins[0] + 2;
+    const long long y_num_bins = this->NumberOfBins[1] + 2;
+    const long long z_num_bins = this->NumberOfBins[2] + 2;
 
     std::array<double, 6> bounds{};
     grid->GetBounds(bounds.data());
@@ -95,9 +99,9 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     const auto y_width = bounds[3] - bounds[2];
     const auto z_width = bounds[5] - bounds[4];
 
-    const auto x_bin_width = x_width / (num_bins - 2);
-    const auto y_bin_width = y_width / (num_bins - 2);
-    const auto z_bin_width = z_width / (num_bins - 2);
+    const auto x_bin_width = x_width / (x_num_bins - 2);
+    const auto y_bin_width = y_width / (y_num_bins - 2);
+    const auto z_bin_width = z_width / (z_num_bins - 2);
 
     const auto x_origin = bounds[0] - x_bin_width;
     const auto y_origin = bounds[2] - y_bin_width;
@@ -111,7 +115,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     const Eigen::Vector3d bin_size(x_bin_width, y_bin_width, z_bin_width);
 
     // Create bins
-    const auto grid_size = num_bins * num_bins * num_bins;
+    const auto grid_size = x_num_bins * y_num_bins * z_num_bins;
 
     std::vector<std::vector<vtkIdType>> bins(grid_size + 1);
 
@@ -127,7 +131,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
         // Calculate index from coordinates
         const Eigen::Vector3d cell_coords = (coords - origin).cwiseQuotient(bin_size);
 
-        return std::make_tuple(static_cast<vtkIdType>(std::floor(cell_coords[0]) + num_bins * (std::floor(cell_coords[1]) + num_bins * std::floor(cell_coords[2]))),
+        return std::make_tuple(static_cast<vtkIdType>(std::floor(cell_coords[0]) + x_num_bins * (std::floor(cell_coords[1]) + y_num_bins * std::floor(cell_coords[2]))),
             static_cast<int>(std::floor(cell_coords[0])), static_cast<int>(std::floor(cell_coords[1])), static_cast<int>(std::floor(cell_coords[2])));
     };
 
@@ -221,21 +225,21 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
 
                     for (int r = -1; r <= 1; ++r)
                     {
-                        const auto z_offset = r * num_bins * num_bins;
+                        const auto z_offset = r * x_num_bins * y_num_bins;
 
-                        if (std::get<3>(bin_index) + z_offset >= 0 && std::get<3>(bin_index) + z_offset < num_bins)
+                        if (std::get<3>(bin_index) + z_offset >= 0 && std::get<3>(bin_index) + z_offset < z_num_bins)
                         {
                             for (int q = -1; q <= 1; ++q)
                             {
-                                const auto y_offset = q * num_bins;
+                                const auto y_offset = q * x_num_bins;
 
-                                if (std::get<2>(bin_index) + y_offset >= 0 && std::get<2>(bin_index) + y_offset < num_bins)
+                                if (std::get<2>(bin_index) + y_offset >= 0 && std::get<2>(bin_index) + y_offset < y_num_bins)
                                 {
                                     for (int p = -1; p <= 1; ++p)
                                     {
                                         const auto x_offset = static_cast<long long>(p);
 
-                                        if (std::get<1>(bin_index) + x_offset >= 0 && std::get<1>(bin_index) + x_offset < num_bins
+                                        if (std::get<1>(bin_index) + x_offset >= 0 && std::get<1>(bin_index) + x_offset < x_num_bins
                                             && (r != 0 || q != 0 || p != 0))
                                         {
                                             cells.push_back(std::get<0>(bin_index) + x_offset + y_offset + z_offset);
@@ -264,6 +268,8 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                     if (closest_point == -1)
                     {
                         ++num_bad_nodes;
+
+                        error_array->SetValue(grid_index, std::numeric_limits<double>::quiet_NaN());
 
                         continue;
                     }

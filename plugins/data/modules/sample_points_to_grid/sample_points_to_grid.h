@@ -5,14 +5,15 @@
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 
+#include <array>
+
 class VTK_EXPORT sample_points_to_grid : public vtkRectilinearGridAlgorithm
 {
 public:
     static sample_points_to_grid* New();
     vtkTypeMacro(sample_points_to_grid, vtkRectilinearGridAlgorithm);
 
-    vtkSetMacro(NumberOfBins, int);
-    vtkGetMacro(NumberOfBins, int);
+    vtkSetVector3Macro(NumberOfBins, int);
 
 protected:
     sample_points_to_grid();
@@ -28,5 +29,5 @@ private:
     sample_points_to_grid(const sample_points_to_grid&);
     void operator=(const sample_points_to_grid&);
 
-    int NumberOfBins;
+    std::array<int, 3> NumberOfBins;
 };

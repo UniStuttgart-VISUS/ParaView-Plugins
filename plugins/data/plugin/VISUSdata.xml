@@ -243,7 +243,7 @@
                 </Documentation>
             </InputProperty>
 
-            <IntVectorProperty name="NumberOfBins" command="SetNumberOfBins" label="Number of bins" number_of_elements="1" default_values="10" panel_visibility="advanced">
+            <IntVectorProperty name="NumberOfBins" command="SetNumberOfBins" label="Number of bins" number_of_elements="3" default_values="10 10 10" panel_visibility="advanced">
                 <Documentation>
                     Number of bins for nearest neighbor search per spatial dimension.
                 </Documentation>
