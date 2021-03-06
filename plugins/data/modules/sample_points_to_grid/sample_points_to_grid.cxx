@@ -123,7 +123,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     {
         // If points are out of bounds, return index of the dummy cell
         if (coords[0] < x_origin || coords[1] < y_origin || coords[2] < z_origin ||
-            coords[0] > x_upper_bound || coords[1] > y_upper_bound || coords[2] > z_upper_bound)
+            coords[0] >= x_upper_bound || coords[1] >= y_upper_bound || coords[2] >= z_upper_bound)
         {
             return std::make_tuple(grid_size, -1, -1, -1);
         }
@@ -203,6 +203,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
 
         read global:    array_map, bins, points, x_coords, y_coords, z_coords
         write global:   error_array, output
+        write critical: num_bad_nodes
     **/
     #pragma omp parallel for schedule(dynamic) default(none) shared(error_array, output, \
         array_map, bins, points, x_coords, y_coords, z_coords)
