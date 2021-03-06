@@ -171,13 +171,6 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     error_array->SetNumberOfTuples(grid->GetNumberOfPoints());
 
     // Iterate over points and assign it to a bin
-    /**
-        OpenMP information
-
-        read global:    points, get_bin_index
-        write global:   bins
-    **/
-    #pragma omp parallel for schedule(dynamic) default(none) shared(points, get_bin_index, bins)
     for (vtkIdType p = 0; p < points->GetNumberOfPoints(); ++p)
     {
         Eigen::Vector3d point;
