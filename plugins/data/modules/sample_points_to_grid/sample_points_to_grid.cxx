@@ -199,6 +199,14 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
 
     std::size_t num_bad_nodes = 0;
 
+    /**
+        OpenMP information
+
+        read global:    array_map, bins, points, x_coords, y_coords, z_coords
+        write global:   error_array, output
+    **/
+    #pragma omp parallel for schedule(dynamic) default(none) shared(error_array, output, \
+        array_map, bins, points, x_coords, y_coords, z_coords)
     for (int k = extent[4]; k <= extent[5]; ++k)
     {
         const auto z = z_coords->GetComponent(k, 0);
@@ -267,7 +275,10 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
 
                     if (closest_point == -1)
                     {
-                        ++num_bad_nodes;
+                        #pragma omp critical(bad_nodes)
+                        {
+                            ++num_bad_nodes;
+                        }
 
                         error_array->SetValue(grid_index, std::numeric_limits<double>::quiet_NaN());
 
