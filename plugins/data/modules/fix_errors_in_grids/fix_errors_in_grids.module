@@ -1,8 +1,0 @@
-NAME
-  VISUSdata::fix_errors_in_grids
-LIBRARY_NAME
-  fix_errors_in_grids
-DEPENDS
-  VTK::CommonCore
-  VTK::CommonExecutionModel
-  VTK::FiltersCore
