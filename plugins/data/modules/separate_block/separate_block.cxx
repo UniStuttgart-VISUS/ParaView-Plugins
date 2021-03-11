@@ -65,8 +65,9 @@ int separate_block::RequestDataObject(vtkInformation*, vtkInformationVector** in
     if (this->BlockID < 0 || this->BlockID >= static_cast<int>(input->GetNumberOfBlocks()))
     {
         vtkDataObject* dummy = vtkUnstructuredGrid::New();
-
         output_vector->GetInformationObject(0)->Set(vtkDataObject::DATA_OBJECT(), dummy);
+        dummy->FastDelete();
+
         this->GetOutputPortInformation(0)->Set(vtkDataObject::DATA_EXTENT_TYPE(), dummy->GetExtentType());
 
         return 1;
@@ -117,6 +118,8 @@ int separate_block::RequestDataObject(vtkInformation*, vtkInformationVector** in
 
         // Set created object
         output_vector->GetInformationObject(0)->Set(vtkDataObject::DATA_OBJECT(), output);
+        output->FastDelete();
+
         this->GetOutputPortInformation(0)->Set(vtkDataObject::DATA_EXTENT_TYPE(), output->GetExtentType());
     }
 
