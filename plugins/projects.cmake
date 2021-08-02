@@ -113,6 +113,6 @@ function(pv_module NAME PLUGIN SOURCES RESULT_TARGET)
     set(${RESULT_TARGET} ${_RESULT_TARGET} PARENT_SCOPE)
 
     target_include_directories(${_RESULT_TARGET} PRIVATE ${common_include})
-    set_target_properties(${_RESULT_TARGET} PROPERTIES CXX_STANDARD 14)
+    vtk_module_set_properties(${PLUGIN}::${NAME} CXX_STANDARD 14)
   endif()
 endfunction()
