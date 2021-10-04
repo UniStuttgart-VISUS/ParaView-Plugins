@@ -2,7 +2,7 @@
     <ProxyGroup name="filters">
         <!--
 
-        Grid to Polydata.
+        Grid to polydata.
 
         Convert an unstructured grid to polydata.
 
@@ -22,6 +22,66 @@
                 </DataTypeDomain>
                 <Documentation>
                     Unstructured grid containing cells.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
+        Image to rectilinear grid.
+
+        Convert an image to a rectilinear grid.
+
+        -->
+        <SourceProxy name="ImageToRectilinearGrid" class="image_to_rectilinear_grid" label="Image to rectilinear grid">
+            <Documentation>
+                Convert an image to a rectilinear grid.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkImageData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Image to convert into a rectilinear grid.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
+        Rectilinear grid to structured grid.
+
+        Convert a rectilinear grid to a structured grid.
+
+        -->
+        <SourceProxy name="RectilinearGridToStructuredGrid" class="rectilinear_grid_to_structured_grid" label="Rectilinear grid to structured grid">
+            <Documentation>
+                Convert a rectilinear grid to a structured grid.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkRectilinearGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Rectilinear grid to convert into a structured grid.
                 </Documentation>
             </InputProperty>
 
@@ -248,6 +308,36 @@
                     The extracted block.
                 </Documentation>
             </OutputPort>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
+        Structured grid to unstructured grid.
+
+        Convert a structured to an unstructured grid.
+
+        -->
+        <SourceProxy name="StructuredGridToUnstructuredGrid" class="structured_grid_to_unstructured_grid" label="Structured grid to unstructured grid">
+            <Documentation>
+                Convert a structured to an unstructured grid.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkStructuredGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Structured grid to convert into an unstructured grid.
+                </Documentation>
+            </InputProperty>
 
             <Hints>
                 <ShowInMenu category="VISUS Data"/>

@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::rectilinear_grid_to_structured_grid
+LIBRARY_NAME
+  rectilinear_grid_to_structured_grid
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

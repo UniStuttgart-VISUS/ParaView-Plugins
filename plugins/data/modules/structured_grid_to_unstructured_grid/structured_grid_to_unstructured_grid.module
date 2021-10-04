@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::structured_grid_to_unstructured_grid
+LIBRARY_NAME
+  structured_grid_to_unstructured_grid
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore
