@@ -25,10 +25,12 @@ This plugin provides filters for data loading and saving, as well for transforma
 |---------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
 | [Grid to polydata](plugins/data/modules/grid_to_polydata/Readme.md)                                           | Convert an unstructured grid to polydata.                                             |
 | [Image to rectilinear grid](plugins/data/modules/image_to_rectilinear_grid/Readme.md)                         | Convert an image to a rectilinear grid.                                               |
-| [Rectilinear grid to structured grid](plugins/data/modules/rectilinear_grid_to_structured_grid/Readme.md)     | Convert an rectilinear grid to a structured grid.                                     |
+| [Rectilinear grid to image](plugins/data/modules/rectilinear_grid_to_image/Readme.md)                         | Convert a rectilinear grid to an image.                                               |
+| [Rectilinear grid to structured grid](plugins/data/modules/rectilinear_grid_to_structured_grid/Readme.md)     | Convert a rectilinear grid to a structured grid.                                      |
 | [Resample rotating grid](plugins/data/modules/resample_rotating_grid/Readme.md)                               | Given a rotation around the z-axis, the grid is resampled as if it did not rotate.    |
 | [Sample points to grid](plugins/data/modules/sample_points_to_grid/Readme.md)                                 | Using nearest neighbor interpolation, sample points to grid nodes.                    |
 | [Separate block](plugins/data/modules/separate_block/Readme.md)                                               | Extract a separate block in its native data structure.                                |
+| [Structured grid to rectilinear grid](plugins/data/modules/structured_grid_to_rectilinear_grid/Readme.md)     | Convert a structured grid to a rectilinear grid.                                      |
 | [Structured grid to unstructured grid](plugins/data/modules/structured_grid_to_unstructured_grid/Readme.md)   | Convert a structured grid to an unstructured grid.                                    |
 
 #### Geometry plugin

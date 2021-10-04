@@ -62,6 +62,36 @@
 
         <!--
 
+        Rectilinear grid to image.
+
+        Convert a rectilinear grid to an image.
+
+        -->
+        <SourceProxy name="RectilinearGridToImage" class="rectilinear_grid_to_image" label="Rectilinear grid to image">
+            <Documentation>
+                Convert a rectilinear grid to an image.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkRectilinearGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Rectilinear grid to convert into an image.
+                </Documentation>
+            </InputProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Rectilinear grid to structured grid.
 
         Convert a rectilinear grid to a structured grid.
@@ -308,6 +338,36 @@
                     The extracted block.
                 </Documentation>
             </OutputPort>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
+        Structured grid to rectilinear grid.
+
+        Convert a structured grid to a rectilinear grid.
+
+        -->
+        <SourceProxy name="StructuredGridToRectilinearGrid" class="structured_grid_to_rectilinear_grid" label="Structured grid to rectilinear grid">
+            <Documentation>
+                Convert a structured grid to a rectilinear grid.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkStructuredGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Structured grid to convert into a rectilinear grid.
+                </Documentation>
+            </InputProperty>
 
             <Hints>
                 <ShowInMenu category="VISUS Data"/>

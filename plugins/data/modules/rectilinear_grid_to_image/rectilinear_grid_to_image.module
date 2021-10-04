@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::rectilinear_grid_to_image
+LIBRARY_NAME
+  rectilinear_grid_to_image
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore
