@@ -77,12 +77,15 @@ function(pv_plugin NAME MODULES)
     target_link_libraries(${NAME} PRIVATE ${module_names})
 
     install(TARGETS ${NAME})
+    install(FILES ${NAME}.xml DESTINATION share/paraview-plugins/xml)
   else()
     paraview_add_plugin(${NAME}
       VERSION                  1.0
       SERVER_MANAGER_XML      ${NAME}.xml
       MODULES                 ${module_names}
     )
+
+    install(FILES ${NAME}.xml DESTINATION  share/paraview-plugins/xml)                                                 
   endif()
 endfunction()
 
