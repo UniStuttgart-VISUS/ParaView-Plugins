@@ -85,7 +85,7 @@ function(pv_plugin NAME MODULES)
       MODULES                 ${module_names}
     )
 
-    install(FILES ${NAME}.xml DESTINATION  share/paraview-plugins/xml)                                                 
+    install(FILES ${NAME}.xml DESTINATION share/paraview-plugins/xml)                                                 
   endif()
 endfunction()
 
