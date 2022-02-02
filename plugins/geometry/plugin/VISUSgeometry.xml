@@ -269,12 +269,7 @@
                     </RequiredProperties>
                 </ArrayListDomain>
                 <Hints>
-                    <PropertyWidgetDecorator type="CompositeDecorator">
-                        <Expression type="or">
-                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="2" />
-                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="3" />
-                        </Expression>
-                    </PropertyWidgetDecorator>
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="3" />
                 </Hints>
                 <Documentation>
                     Input velocity field for perpendicular Gaussian smoothing.
@@ -288,16 +283,53 @@
             </IntVectorProperty>
             <IntVectorProperty name="Method" command="SetMethod" label="Smoothing method" number_of_elements="1" default_values="0">
                 <EnumerationDomain name="enum">
-                    <Entry value="0" text="Gaussian"/>
-                    <Entry value="1" text="Taubin"/>
-                    <Entry value="2" text="Perpendicular Gaussian"/>
+                    <Entry value="0" text="Implicit Gaussian"/>
+                    <Entry value="1" text="Gaussian"/>
+                    <Entry value="2" text="Taubin"/>
+                    <Entry value="3" text="Perpendicular Gaussian"/>
                 </EnumerationDomain>
                 <Documentation>
                     Method used for smoothing: Gaussian, Taubin and a Gaussian smoothing with restricted movement of the points to a vector field perpendicular to the input field.
                 </Documentation>
             </IntVectorProperty>
+            <IntVectorProperty name="Variant" command="SetVariant" label="Method variant" number_of_elements="1" default_values="0">
+                <EnumerationDomain name="enum">
+                    <Entry value="0" text="Normal"/>
+                    <Entry value="1" text="Fixed endpoints"/>
+                    <Entry value="2" text="Growing"/>
+                </EnumerationDomain>
+                <Hints>
+                    <PropertyWidgetDecorator type="CompositeDecorator">
+                        <Expression type="or">
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="0" />
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="1" />
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="2" />
+                        </Expression>
+                    </PropertyWidgetDecorator>
+                </Hints>
+                <Documentation>
+                    Variant of the method for smoothing: normal, fixed endpoints, or fixed until growth ended.
+                </Documentation>
+            </IntVectorProperty>
             <DoubleVectorProperty name="Lambda" command="SetLambda" label="Smoothing factor" number_of_elements="1" default_values="0.7">
                 <DoubleRangeDomain name="lambda_range" min="0.00001" max="1.0" />
+                <Hints>
+                    <PropertyWidgetDecorator type="CompositeDecorator">
+                        <Expression type="or">
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="1" />
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="2" />
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="3" />
+                        </Expression>
+                    </PropertyWidgetDecorator>
+                </Hints>
+                <Documentation>
+                    Gaussian smoothing factor.
+                </Documentation>
+            </DoubleVectorProperty>
+            <DoubleVectorProperty name="ImplicitLambda" command="SetImplicitLambda" label="Smoothing factor" number_of_elements="1" default_values="20">
+                <Hints>
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="0" />
+                </Hints>
                 <Documentation>
                     Gaussian smoothing factor.
                 </Documentation>
@@ -305,7 +337,7 @@
             <DoubleVectorProperty name="Mu" command="SetMu" label="Inflation factor" number_of_elements="1" default_values="-0.75">
                 <DoubleRangeDomain name="lambda_range" min="-1.0" max="0.0" />
                 <Hints>
-                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="1" />
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="2" />
                 </Hints>
                 <Documentation>
                     Inflation factor for Taubin smoothing.

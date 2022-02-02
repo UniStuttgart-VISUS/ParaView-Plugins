@@ -4,6 +4,7 @@
 #include "vtkDoubleArray.h"
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
+#include "vtkMultiBlockDataSet.h"
 #include "vtkObjectFactory.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
@@ -12,6 +13,7 @@
 #include "vtkStructuredGrid.h"
 
 #include "Eigen/Dense"
+#include "Eigen/Sparse"
 
 #include <array>
 #include <cmath>
@@ -89,7 +91,7 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
 
     // Get output
     auto* out_info = output_vector->GetInformationObject(0);
-    auto* output = vtkPolyData::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
+    auto* output = vtkMultiBlockDataSet::SafeDownCast(out_info->Get(vtkDataObject::DATA_OBJECT()));
 
     // Check parameters
     if (this->NumIterations < 0)
@@ -99,6 +101,13 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
     }
 
     const auto method = static_cast<method_t>(this->Method);
+    const auto variant = static_cast<variant_t>(this->Variant);
+
+    if (this->ImplicitLambda <= 0.0)
+    {
+        std::cerr << "The implicit smoothing factor must be positive" << std::endl;
+        return 0;
+    }
 
     if (this->Lambda <= 0.0 || this->Lambda > 1.0)
     {
@@ -125,78 +134,247 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
     }
 
     // Copy input to output and work on that copy
-    output->DeepCopy(input);
+    std::vector<vtkSmartPointer<vtkPolyData>> output_steps(this->NumIterations + 1uLL);
+
+    for (std::size_t i = 0; i < output_steps.size(); ++i)
+    {
+        output_steps[i] = vtkSmartPointer<vtkPolyData>::New();
+        output_steps[i]->DeepCopy(input);
+
+        auto original_positions = vtkSmartPointer<vtkDoubleArray>::New();
+        original_positions->SetName("Original Positions");
+        original_positions->SetNumberOfComponents(3);
+        original_positions->SetNumberOfTuples(input->GetNumberOfPoints());
+
+        std::array<double, 3> point{};
+
+        for (vtkIdType p = 0; p < input->GetNumberOfPoints(); ++p)
+        {
+            input->GetPoint(p, point.data());
+            original_positions->SetTuple(p, point.data());
+        }
+
+        auto displacements = vtkSmartPointer<vtkDoubleArray>::New();
+        displacements->SetName("Displacements");
+        displacements->SetNumberOfComponents(3);
+        displacements->SetNumberOfTuples(input->GetNumberOfPoints());
+
+        output_steps[i]->GetPointData()->AddArray(original_positions);
+        output_steps[i]->GetPointData()->AddArray(displacements);
+
+        output->SetBlock(i, output_steps[i]);
+    }
 
     // Line-wise
-    output->GetLines()->InitTraversal();
+    output_steps.front()->GetLines()->InitTraversal();
 
     auto point_indices = vtkSmartPointer<vtkIdList>::New();
 
-    while (output->GetLines()->GetNextCell(point_indices))
+    while (output_steps.front()->GetLines()->GetNextCell(point_indices))
     {
         std::vector<Eigen::Vector3d> points(point_indices->GetNumberOfIds()), temp_points(point_indices->GetNumberOfIds());
 
         for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
         {
-            output->GetPoints()->GetPoint(point_indices->GetId(index), points[index].data());
+            output_steps.front()->GetPoints()->GetPoint(point_indices->GetId(index), points[index].data());
         }
 
-        // Apply smoothing...
-        for (std::size_t i = 0; i < this->NumIterations; ++i)
+        variant_t state = variant;
+        auto max_distance = (points[0] - points[points.size() - 1]).norm();
+
+        if (method == method_t::implicit_gaussian)
         {
-            // ... Gaussian smoothing
-            if (method == method_t::gaussian || method == method_t::taubin)
+            // Create matrix representing the points of the polyline
+            const auto n = points.size();
+
+            Eigen::MatrixXd vertices(n, 3);
+
+            for (std::size_t i = 0; i < n; ++i)
             {
-                for (std::size_t index = 0; index < points.size(); ++index)
-                {
-                    temp_points[index] = gaussian_smoothing(points, index, this->Lambda);
-                }
-            }
-            // ... perpendicular Gaussian
-            else if (method == method_t::perp_gaussian)
-            {
-                for (std::size_t index = 0; index < points.size(); ++index)
-                {
-                    temp_points[index] = gaussian_smoothing(points, index, this->Lambda, perp_grid);
-                }
+                vertices.row(i) = points[i].transpose();
             }
 
-            // ... second step for Taubin smoothing
-            if (method == method_t::taubin)
+            // Create weight matrix for fixed end points
+            Eigen::SparseMatrix<double> L_fixed(n, n);
+
+            for (std::size_t j = 1; j < n - 1; ++j)
             {
-                for (std::size_t index = 0; index < points.size(); ++index)
-                {
-                    points[index] = gaussian_smoothing(temp_points, index, this->Mu);
-                }
+                const auto weight_left = 1.0 / (points[j] - points[j - 1]).norm();
+                const auto weight_right = 1.0 / (points[j + 1] - points[j]).norm();
+                const auto weight_sum = weight_left + weight_right;
+
+                L_fixed.insert(j, j - 1) = weight_left / weight_sum;
+                L_fixed.insert(j, j) = -1.0;
+                L_fixed.insert(j, j + 1) = weight_right / weight_sum;
             }
-            else
+
+            // Create weight matrix for moving end points
+            auto L_moving = L_fixed;
+
+            L_moving.insert(0, 0) = -1.0;
+            L_moving.insert(0, 1) = 1.0;
+            L_moving.insert(n - 1, n - 2) = 1.0;
+            L_moving.insert(n - 1, n - 1) = -1.0;
+
+            // Create matrices
+            Eigen::SparseMatrix<double> I(n, n);
+            I.setIdentity();
+
+            const Eigen::SparseMatrix<double> A_fixed = (I - this->ImplicitLambda * L_fixed);
+            const Eigen::SparseMatrix<double> A_moving = (I - this->ImplicitLambda * L_moving);
+
+            // Apply smoothing
+            for (std::size_t i = 0; i < this->NumIterations; ++i)
             {
-                std::swap(points, temp_points);
+                switch (state)
+                {
+                case variant_t::fixed_endpoints:
+                    gaussian_smoothing(vertices, A_fixed);
+
+                    break;
+                case variant_t::growing:
+                case variant_t::normal:
+                    gaussian_smoothing(vertices, A_moving);
+                }
+
+                if (state == variant_t::growing)
+                {
+                    const auto distance = (vertices.row(0) - vertices.row(points.size() - 1)).norm();
+
+                    if (distance < 0.9 * max_distance)
+                    {
+                        state = variant_t::fixed_endpoints;
+                    }
+
+                    max_distance = std::max(max_distance, distance);
+                }
+
+                // Write smoothed points to output
+                auto original_positions = output_steps[i + 1]->GetPointData()->GetArray("Original Positions");
+                auto displacements = output_steps[i + 1]->GetPointData()->GetArray("Displacements");
+
+                for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
+                {
+                    Eigen::Vector3d original_position;
+                    original_positions->GetTuple(point_indices->GetId(index), original_position.data());
+
+                    const Eigen::Vector3d point = vertices.row(index).transpose();
+                    const Eigen::Vector3d displacement = point - original_position;
+
+                    output_steps[i + 1]->GetPoints()->SetPoint(point_indices->GetId(index), point.data());
+
+                    displacements->SetTuple(point_indices->GetId(index), displacement.data());
+                }
             }
         }
-
-        // Write smoothed points to output
-        for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
+        else
         {
-            output->GetPoints()->SetPoint(point_indices->GetId(index), points[index].data());
+            // Apply smoothing...
+            for (std::size_t i = 0; i < this->NumIterations; ++i)
+            {
+                // ... Gaussian smoothing
+                if (method == method_t::gaussian || method == method_t::taubin)
+                {
+                    for (std::size_t index = 0; index < points.size(); ++index)
+                    {
+                        temp_points[index] = gaussian_smoothing(points, index, this->Lambda, state);
+                    }
+                }
+                // ... perpendicular Gaussian
+                else if (method == method_t::perp_gaussian)
+                {
+                    for (std::size_t index = 0; index < points.size(); ++index)
+                    {
+                        temp_points[index] = gaussian_smoothing(points, index, this->Lambda, perp_grid);
+                    }
+                }
+
+                // ... second step for Taubin smoothing
+                if (method == method_t::taubin)
+                {
+                    for (std::size_t index = 0; index < points.size(); ++index)
+                    {
+                        points[index] = gaussian_smoothing(temp_points, index, this->Mu, state);
+                    }
+                }
+                else
+                {
+                    std::swap(points, temp_points);
+                }
+
+                if (state == variant_t::growing)
+                {
+                    const auto distance = (points[0] - points[points.size() - 1]).norm();
+
+                    if (distance < 0.9 * max_distance)
+                    {
+                        state = variant_t::fixed_endpoints;
+                    }
+
+                    max_distance = std::max(max_distance, distance);
+                }
+
+                // Write smoothed points to output
+                auto original_positions = output_steps[i + 1]->GetPointData()->GetArray("Original Positions");
+                auto displacements = output_steps[i + 1]->GetPointData()->GetArray("Displacements");
+
+                for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
+                {
+                    Eigen::Vector3d original_position;
+                    original_positions->GetTuple(point_indices->GetId(index), original_position.data());
+
+                    const Eigen::Vector3d point = points[index];
+                    const Eigen::Vector3d displacement = point - original_position;
+
+                    output_steps[i + 1]->GetPoints()->SetPoint(point_indices->GetId(index), point.data());
+
+                    displacements->SetTuple(point_indices->GetId(index), displacement.data());
+                }
+            }
         }
     }
 
     return 1;
 }
 
+void smooth_lines::gaussian_smoothing(Eigen::MatrixXd& vertices,
+    const Eigen::SparseMatrix<double>& matrix) const
+{
+    const Eigen::BiCGSTAB<Eigen::SparseMatrix<double>, Eigen::IncompleteLUT<double>> solver(matrix);
+
+    const Eigen::VectorXd x1 = solver.solve(vertices.col(0));
+    const Eigen::VectorXd x2 = solver.solve(vertices.col(1));
+    const Eigen::VectorXd x3 = solver.solve(vertices.col(2));
+
+    vertices << x1, x2, x3;
+}
+
 Eigen::Vector3d smooth_lines::gaussian_smoothing(const std::vector<Eigen::Vector3d>& points,
-    const std::size_t index, const double weight) const
+    const std::size_t index, const double weight, const variant_t variant) const
 {
     Eigen::Vector3d direction;
 
     if (index == 0)
     {
-        direction = weight * (points[index + 1] - points[index]);
+        if (variant == variant_t::fixed_endpoints)
+        {
+            direction.setZero();
+        }
+        else
+        {
+            direction = weight * (points[index + 1] - points[index]);
+        }
     }
     else if (index == points.size() - 1)
     {
-        direction = weight * (points[index - 1] - points[index]);
+        if (variant == variant_t::fixed_endpoints)
+        {
+            direction.setZero();
+        }
+        else
+        {
+            direction = weight * (points[index - 1] - points[index]);
+        }
     }
     else
     {
@@ -216,7 +394,7 @@ Eigen::Vector3d smooth_lines::gaussian_smoothing(const std::vector<Eigen::Vector
         return points[index];
     }
 
-    Eigen::Vector3d direction = gaussian_smoothing(points, index, weight) - points[index];
+    Eigen::Vector3d direction = gaussian_smoothing(points, index, weight, variant_t::fixed_endpoints) - points[index];
 
     // Interpolate vector field at the original point position
     int sub_id{};
