@@ -3,6 +3,7 @@
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
 #include "vtkPolyDataAlgorithm.h"
+#include "vtkStructuredGrid.h"
 
 #include "Eigen/Dense"
 
@@ -14,6 +15,9 @@ public:
 
     vtkSetMacro(NumIterations, int);
     vtkGetMacro(NumIterations, int);
+
+    vtkSetMacro(Method, int);
+    vtkGetMacro(Method, int);
 
     vtkSetMacro(Lambda, double);
     vtkGetMacro(Lambda, double);
@@ -41,9 +45,29 @@ private:
      *
      * @return Displaced point
      */
-    Eigen::Vector3d gaussian_smoothing(const std::vector<Eigen::Vector3d>& points, std::size_t index, double weight) const;
+    Eigen::Vector3d gaussian_smoothing(const std::vector<Eigen::Vector3d>& points,
+        std::size_t index, double weight) const;
+
+    /*
+     * Gaussian smoothing restricted to movement along the given vector field
+     *
+     * @param points Line points
+     * @param index Index of the point for which the displacement from smoothing is calculated
+     * @param weight Smoothing weight; positive for smoothing, negative for inflation
+     *
+     * @return Displaced point
+     */
+    Eigen::Vector3d gaussian_smoothing(const std::vector<Eigen::Vector3d>& points,
+        std::size_t index, double weight, const vtkStructuredGrid* vector_field) const;
+
+    /// Enums
+    enum class method_t
+    {
+        gaussian, taubin, perp_gaussian
+    };
 
     /// Parameters
     int NumIterations;
+    int Method;
     double Lambda, Mu;
 };

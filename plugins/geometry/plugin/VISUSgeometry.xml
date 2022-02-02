@@ -249,10 +249,51 @@
                     Lines which are going to be smoothed.
                 </Documentation>
             </InputProperty>
+            <InputProperty name="Grid" command="SetInputConnection" port_index="1">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkStructuredGrid"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Grid storing a vector field for the perpendicular Gaussian smoothing.
+                </Documentation>
+            </InputProperty>
+            
+            <StringVectorProperty name="SelectInputVectors" label="Vectors" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="inputs_array">
+                    <RequiredProperties>
+                        <Property name="Grid" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Hints>
+                    <PropertyWidgetDecorator type="CompositeDecorator">
+                        <Expression type="or">
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="2" />
+                            <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="3" />
+                        </Expression>
+                    </PropertyWidgetDecorator>
+                </Hints>
+                <Documentation>
+                    Input velocity field for perpendicular Gaussian smoothing.
+                </Documentation>
+            </StringVectorProperty>
 
             <IntVectorProperty name="NumIterations" command="SetNumIterations" label="Number of iterations" number_of_elements="1" default_values="100">
                 <Documentation>
                     Number of smoothing steps performed.
+                </Documentation>
+            </IntVectorProperty>
+            <IntVectorProperty name="Method" command="SetMethod" label="Smoothing method" number_of_elements="1" default_values="0">
+                <EnumerationDomain name="enum">
+                    <Entry value="0" text="Gaussian"/>
+                    <Entry value="1" text="Taubin"/>
+                    <Entry value="2" text="Perpendicular Gaussian"/>
+                </EnumerationDomain>
+                <Documentation>
+                    Method used for smoothing: Gaussian, Taubin and a Gaussian smoothing with restricted movement of the points to a vector field perpendicular to the input field.
                 </Documentation>
             </IntVectorProperty>
             <DoubleVectorProperty name="Lambda" command="SetLambda" label="Smoothing factor" number_of_elements="1" default_values="0.7">
@@ -263,8 +304,11 @@
             </DoubleVectorProperty>
             <DoubleVectorProperty name="Mu" command="SetMu" label="Inflation factor" number_of_elements="1" default_values="-0.75">
                 <DoubleRangeDomain name="lambda_range" min="-1.0" max="0.0" />
+                <Hints>
+                    <PropertyWidgetDecorator type="GenericDecorator" mode="visibility" property="Method" value="1" />
+                </Hints>
                 <Documentation>
-                    Inflation factor for Taubin smoothing (set zero for Gaussian smoothing).
+                    Inflation factor for Taubin smoothing.
                 </Documentation>
             </DoubleVectorProperty>
 
