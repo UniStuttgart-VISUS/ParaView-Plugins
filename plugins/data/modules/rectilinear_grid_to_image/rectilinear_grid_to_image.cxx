@@ -112,7 +112,7 @@ int rectilinear_grid_to_image::RequestData(vtkInformation* vtkNotUsed(request), 
         const auto current = coordinates_y->GetComponent(i, 0);
         const auto difference = std::abs(current - previous);
 
-        if (std::abs(spacing[0] - difference) > 1.0e-6)
+        if (std::abs(spacing[1] - difference) > 1.0e-6)
         {
             std::cerr << "Input cannot be converted to image: Y coordinates are not equally spaced." << std::endl;
 
@@ -129,7 +129,7 @@ int rectilinear_grid_to_image::RequestData(vtkInformation* vtkNotUsed(request), 
         const auto current = coordinates_z->GetComponent(i, 0);
         const auto difference = std::abs(current - previous);
 
-        if (std::abs(spacing[0] - difference) > 1.0e-6)
+        if (std::abs(spacing[2] - difference) > 1.0e-6)
         {
             std::cerr << "Input cannot be converted to image: Z coordinates are not equally spaced." << std::endl;
 
