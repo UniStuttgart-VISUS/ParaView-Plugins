@@ -133,46 +133,41 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
     }
 
     // Copy input to output and work on that copy
-    vtkSmartPointer<vtkPolyData> output_steps;
+    output->DeepCopy(input);
 
+    auto original_positions = vtkSmartPointer<vtkDoubleArray>::New();
+    original_positions->SetName("Original Positions");
+    original_positions->SetNumberOfComponents(3);
+    original_positions->SetNumberOfTuples(input->GetNumberOfPoints());
+
+    std::array<double, 3> point{};
+
+    for (vtkIdType p = 0; p < input->GetNumberOfPoints(); ++p)
     {
-        output_steps = vtkSmartPointer<vtkPolyData>::New();
-        output_steps->DeepCopy(input);
-
-        auto original_positions = vtkSmartPointer<vtkDoubleArray>::New();
-        original_positions->SetName("Original Positions");
-        original_positions->SetNumberOfComponents(3);
-        original_positions->SetNumberOfTuples(input->GetNumberOfPoints());
-
-        std::array<double, 3> point{};
-
-        for (vtkIdType p = 0; p < input->GetNumberOfPoints(); ++p)
-        {
-            input->GetPoint(p, point.data());
-            original_positions->SetTuple(p, point.data());
-        }
-
-        auto displacements = vtkSmartPointer<vtkDoubleArray>::New();
-        displacements->SetName("Displacements");
-        displacements->SetNumberOfComponents(3);
-        displacements->SetNumberOfTuples(input->GetNumberOfPoints());
-
-        output_steps->GetPointData()->AddArray(original_positions);
-        output_steps->GetPointData()->AddArray(displacements);
+        input->GetPoint(p, point.data());
+        original_positions->SetTuple(p, point.data());
     }
 
+    auto displacements = vtkSmartPointer<vtkDoubleArray>::New();
+    displacements->SetName("Displacements");
+    displacements->SetNumberOfComponents(3);
+    displacements->SetNumberOfTuples(input->GetNumberOfPoints());
+
+    output->GetPointData()->AddArray(original_positions);
+    output->GetPointData()->AddArray(displacements);
+
     // Line-wise
-    output_steps->GetLines()->InitTraversal();
+    output->GetLines()->InitTraversal();
 
     auto point_indices = vtkSmartPointer<vtkIdList>::New();
 
-    while (output_steps->GetLines()->GetNextCell(point_indices))
+    while (output->GetLines()->GetNextCell(point_indices))
     {
         std::vector<Eigen::Vector3d> points(point_indices->GetNumberOfIds()), temp_points(point_indices->GetNumberOfIds());
 
         for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
         {
-            output_steps->GetPoints()->GetPoint(point_indices->GetId(index), points[index].data());
+            output->GetPoints()->GetPoint(point_indices->GetId(index), points[index].data());
         }
 
         variant_t state = variant;
@@ -247,8 +242,8 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
             }
 
             // Write smoothed points to output
-            auto original_positions = input->GetPointData()->GetArray("Original Positions");
-            auto displacements = output_steps->GetPointData()->GetArray("Displacements");
+            auto original_positions = output->GetPointData()->GetArray("Original Positions");
+            auto displacements = output->GetPointData()->GetArray("Displacements");
 
             for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
             {
@@ -258,7 +253,7 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
                 const Eigen::Vector3d point = vertices.row(index).transpose();
                 const Eigen::Vector3d displacement = point - original_position;
 
-                output_steps->GetPoints()->SetPoint(point_indices->GetId(index), point.data());
+                output->GetPoints()->SetPoint(point_indices->GetId(index), point.data());
 
                 displacements->SetTuple(point_indices->GetId(index), displacement.data());
             }
@@ -312,8 +307,8 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
             }
 
             // Write smoothed points to output
-            auto original_positions = input->GetPointData()->GetArray("Original Positions");
-            auto displacements = output_steps->GetPointData()->GetArray("Displacements");
+            auto original_positions = output->GetPointData()->GetArray("Original Positions");
+            auto displacements = output->GetPointData()->GetArray("Displacements");
 
             for (vtkIdType index = 0; index < point_indices->GetNumberOfIds(); ++index)
             {
@@ -323,7 +318,7 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
                 const Eigen::Vector3d point = points[index];
                 const Eigen::Vector3d displacement = point - original_position;
 
-                output_steps->GetPoints()->SetPoint(point_indices->GetId(index), point.data());
+                output->GetPoints()->SetPoint(point_indices->GetId(index), point.data());
 
                 displacements->SetTuple(point_indices->GetId(index), displacement.data());
             }
