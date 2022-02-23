@@ -2,17 +2,17 @@
 
 #include "vtkInformation.h"
 #include "vtkInformationVector.h"
-#include "vtkMultiBlockDataSetAlgorithm.h"
+#include "vtkPolyDataAlgorithm.h"
 #include "vtkStructuredGrid.h"
 
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 
-class smooth_lines : public vtkMultiBlockDataSetAlgorithm
+class smooth_lines : public vtkPolyDataAlgorithm
 {
 public:
     static smooth_lines *New();
-    vtkTypeMacro(smooth_lines, vtkMultiBlockDataSetAlgorithm);
+    vtkTypeMacro(smooth_lines, vtkPolyDataAlgorithm);
 
     vtkSetMacro(NumIterations, int);
     vtkGetMacro(NumIterations, int);
