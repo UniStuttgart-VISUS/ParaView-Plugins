@@ -124,9 +124,15 @@ int regular_grid::RequestData(vtkInformation*, vtkInformationVector**, vtkInform
     auto* output = out_info->Get(vtkDataObject::DATA_OBJECT());
 
     // Check parameters
-    if (this->Dimension[0] <= 0 || this->Dimension[1] <= 0 || this->Dimension[2] <= 0)
+    if (this->Dimension[0] < 0 || this->Dimension[1] < 0 || this->Dimension[2] < 0)
     {
-        std::cerr << "The number of cells must be larger than zero for each direction" << std::endl;
+        std::cerr << "The number of cells must not be negative" << std::endl;
+        return 0;
+    }
+
+    if (this->Dimension[0] == 0 && this->Dimension[1] == 0 && this->Dimension[2] == 0)
+    {
+        std::cerr << "The number of cells must be larger than zero for at least one direction" << std::endl;
         return 0;
     }
 

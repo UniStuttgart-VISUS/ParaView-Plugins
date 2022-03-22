@@ -108,7 +108,7 @@ int smooth_lines::RequestData(vtkInformation*, vtkInformationVector** input_vect
         return 0;
     }
 
-    if (this->Lambda <= 0.0 || this->Lambda > 1.0)
+    if (this->Lambda <= 0.0 || (method != method_t::implicit_gaussian && this->Lambda > 1.0))
     {
         std::cerr << "The smoothing factor must be in the range (0, 1]" << std::endl;
         return 0;

@@ -135,10 +135,13 @@ int remove_long_segments::RequestData(vtkInformation*, vtkInformationVector** in
     output->SetLines(cells);
 
     // Copy points
-    auto points = vtkSmartPointer<vtkPoints>::New();
-    points->ShallowCopy(input->GetPoints());
+    if (input->GetPoints() != nullptr)
+    {
+        auto points = vtkSmartPointer<vtkPoints>::New();
+        points->ShallowCopy(input->GetPoints());
 
-    output->SetPoints(points);
+        output->SetPoints(points);
+    }
 
     return 1;
 }
