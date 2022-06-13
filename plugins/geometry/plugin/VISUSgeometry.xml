@@ -381,6 +381,68 @@
 
         <!--
 
+        Swirling helix.
+
+        Create a helix that swirls around an input B-spline.
+
+        -->
+        <SourceProxy name="SwirlingHelix" class="swirling_helix" label="Swirling helix">
+            <Documentation>
+                Create a helix that swirls around an input B-spline.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkPolyData"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Input lines around which the new helix should be swirling.
+                </Documentation>
+            </InputProperty>
+
+            <StringVectorProperty name="SelectInputTangent" label="Tangent" command="SetInputArrayToProcess" default_values="0" number_of_elements="5" element_types="0 0 0 0 2" animateable="0">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="tangents">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Tangents of the input lines.
+                </Documentation>
+            </StringVectorProperty>
+            <StringVectorProperty name="SelectInputNormal" label="Normal" command="SetInputArrayToProcess" default_values="1" number_of_elements="5" element_types="0 0 0 0 2" animateable="0">
+                <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="normals">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Normals of the input lines.
+                </Documentation>
+            </StringVectorProperty>
+
+            <DoubleVectorProperty name="Radius" command="SetRadius" label="Radius" number_of_elements="1" default_values="1.0">
+                <Documentation>
+                    Radius, i.e., distance of the swirling lines around the respective input line.
+                </Documentation>
+            </DoubleVectorProperty>
+            <DoubleVectorProperty name="Windings" command="SetWindings" label="Number of windings" number_of_elements="1" default_values="2.0">
+                <Documentation>
+                    Number of windings of the swirling lines around the respective input line.
+                </Documentation>
+            </DoubleVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Truncate lines.
 
         Truncate lines by defining an offset and a number of points for the new lines.

@@ -17,7 +17,7 @@ The following parameters are available in the properties panel in ParaView:
 
 | Parameter                                                                             | Description                                                                           | Default value |
 |---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|---------------|
-| Vectors                                                                               | Vector field for restricted, perpendicular smoothing.                                 | 100           |
+| Vectors                                                                               | Vector field for restricted, perpendicular smoothing.                                 |               |
 | MaxNumIterations                                                                      | Number of smoothing steps performed.                                                  | 100           |
 | Method                                                                                | Different smoothing methods: Gaussian, Taubin, and perpendicular Gaussian.            | Gaussian      |
 | Lambda (![Equation](https://render.githubusercontent.com/render/math?math=\lambda))   | Gaussian smoothing factor.                                                            | 0.7           |

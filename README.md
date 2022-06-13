@@ -47,6 +47,7 @@ This plugin provides filters for the computation and modification of geometrical
 | [Remove long segments](plugins/geometry/modules/remove_long_segments/Readme.md)   | Remove segments from a polyline, which are by far larger than the median segment.     |
 | [Smooth lines](plugins/geometry/modules/smooth_lines/Readme.md)                   | Smooth lines using Gaussian or Taubin smoothing.                                      |
 | [Sort line points](plugins/geometry/modules/sort_line_points/Readme.md)           | Sort stored points, thus they appear in the order of occurance in the lines.          |
+| [Swirling helix](plugins/geometry/modules/swirling_helix/Readme.md)               | Create a helix that swirls around another B-spline.                                   |
 | [Truncate lines](plugins/geometry/modules/truncate_lines/Readme.md)               | Truncate lines by defining an offset and a number of points for the new lines.        |
 
 #### Source plugin
