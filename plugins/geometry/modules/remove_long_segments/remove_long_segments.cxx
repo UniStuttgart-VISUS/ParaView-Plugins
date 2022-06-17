@@ -75,7 +75,7 @@ int remove_long_segments::RequestData(vtkInformation*, vtkInformationVector** in
         const auto median_length = lengths[lengths.size() / 2];
 
         // Remove segments above the threshold
-        const auto threshold = this->LengthFactor * median_length;
+        const auto threshold = this->Absolute ? this->LengthFactor : (this->LengthFactor * median_length);
 
         // Remove segments above the threshold
         lines.emplace_back();

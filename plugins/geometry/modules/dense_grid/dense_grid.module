@@ -1,0 +1,8 @@
+NAME
+  VISUSgeometry::dense_grid
+LIBRARY_NAME
+  dense_grid
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

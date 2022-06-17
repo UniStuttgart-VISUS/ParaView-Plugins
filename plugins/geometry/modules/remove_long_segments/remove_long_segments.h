@@ -13,6 +13,9 @@ public:
     vtkSetMacro(LengthFactor, double);
     vtkGetMacro(LengthFactor, double);
 
+    vtkSetMacro(Absolute, int);
+    vtkGetMacro(Absolute, int);
+
 protected:
     remove_long_segments();
 
@@ -26,4 +29,5 @@ private:
 
     /// Parameters
     double LengthFactor;
+    int Absolute;
 };

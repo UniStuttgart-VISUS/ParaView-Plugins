@@ -42,6 +42,7 @@ This plugin provides filters for the computation and modification of geometrical
 | [B-Spline](plugins/geometry/modules/b_spline/Readme.md)                           | Create a B-spline from the input de Boor points.                                      |
 | [Connect lines](plugins/geometry/modules/connect_lines/Readme.md)                 | Connect single lines into polylines, where points are shared.                         |
 | [Connect points](plugins/geometry/modules/connect_points/Readme.md)               | Connect points into a polyline, in the order they are stored.                         |
+| [Dense grid](plugins/geometry/modules/dense_grid/Readme.md)                       | Create line structure from input grids as dense visual representation.                |
 | [Open closed lines](plugins/geometry/modules/open_closed_lines/Readme.md)         | Open closed lines by removing the last segment or by duplicating the shared point.    |
 | [Point cells](plugins/geometry/modules/point_cells/Readme.md)                     | Points for which a cell should be created.                                            |
 | [Remove long segments](plugins/geometry/modules/remove_long_segments/Readme.md)   | Remove segments from a polyline, which are by far larger than the median segment.     |

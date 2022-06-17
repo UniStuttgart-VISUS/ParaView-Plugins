@@ -121,6 +121,42 @@
 
         <!--
 
+        Dense grid.
+
+        Dense line representation of the input grid.
+
+        -->
+        <SourceProxy name="DenseGrid" class="dense_grid" label="Dense grid">
+            <Documentation>
+                Dense line representation of the input grid.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkDataSet"/>
+                </DataTypeDomain>
+                <Documentation>
+                    Input grid whose structure should be visualized.
+                </Documentation>
+            </InputProperty>
+
+            <IntVectorProperty name="Ratio" command="SetRatio" label="Sampling ratio" number_of_elements="1" default_values="1">
+                <Documentation>
+                    Sampling ratio to reduce density of the grid, e.g., 3 means taking only every third point.
+                </Documentation>
+            </IntVectorProperty>
+
+            <Hints>
+                <ShowInMenu category="VISUS Geometry"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Open closed lines.
 
         Open closed lines by either removing the last segment or by duplicating the shared point.
@@ -219,6 +255,12 @@
                     A segment is removed if it is larger than this factor times the median segment length.
                 </Documentation>
             </DoubleVectorProperty>
+            <IntVectorProperty name="Absolute" command="SetAbsolute" label="Absolute length" number_of_elements="1" default_values="0">
+                <BooleanDomain name="bool"/>
+                <Documentation>
+                    Use length factor as absolute length threshold.
+                </Documentation>
+            </IntVectorProperty>
 
             <Hints>
                 <ShowInMenu category="VISUS Geometry"/>
@@ -261,7 +303,7 @@
                     Grid storing a vector field for the perpendicular Gaussian smoothing.
                 </Documentation>
             </InputProperty>
-            
+
             <StringVectorProperty name="SelectInputVectors" label="Vectors" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0">
                 <ArrayListDomain name="array_list" attribute_type="Vectors" input_domain_name="inputs_array">
                     <RequiredProperties>
