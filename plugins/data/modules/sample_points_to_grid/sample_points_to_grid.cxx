@@ -284,6 +284,14 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
 
                         error_array->SetValue(grid_index, std::numeric_limits<double>::quiet_NaN());
 
+                        for (int a = 0; a < output->GetPointData()->GetNumberOfArrays(); ++a)
+                        {
+                            for (int c = 0; c < output->GetPointData()->GetArray(a)->GetNumberOfComponents(); ++c)
+                            {
+                                output->GetPointData()->GetArray(a)->SetComponent(grid_index, c, std::numeric_limits<double>::quiet_NaN());
+                            }
+                        }
+
                         continue;
                     }
 
