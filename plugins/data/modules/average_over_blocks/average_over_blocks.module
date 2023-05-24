@@ -1,0 +1,8 @@
+NAME
+  VISUSdata::average_over_blocks
+LIBRARY_NAME
+  average_over_blocks
+DEPENDS
+  VTK::CommonCore
+  VTK::CommonExecutionModel
+  VTK::FiltersCore

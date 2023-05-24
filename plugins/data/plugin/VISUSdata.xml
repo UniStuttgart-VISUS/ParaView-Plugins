@@ -2,6 +2,54 @@
     <ProxyGroup name="filters">
         <!--
 
+        Average over Blocks.
+
+        Calculate the average for selected data array over all blocks of the dataset.
+
+        -->
+        <SourceProxy name="AverageOverBlocks" class="average_over_blocks" label="Average over blocks">
+            <Documentation>
+                Calculate the average for selected data array over all blocks of the dataset.
+            </Documentation>
+
+            <InputProperty name="Input" command="SetInputConnection" port_index="0">
+                <ProxyGroupDomain name="groups">
+                    <Group name="sources"/>
+                    <Group name="filters"/>
+                </ProxyGroupDomain>
+                <DataTypeDomain name="input_type">
+                    <DataType value="vtkMultiBlockDataSet"/>
+                </DataTypeDomain>
+                <InputArrayDomain name="array"/>
+                <Documentation>
+                    Multiblock data set that should contain the same geometry in each block, as the geometry from the first block is used as output geometry.
+                </Documentation>
+            </InputProperty>
+
+            <StringVectorProperty name="Array" label="Array to average" command="SetInputArrayToProcess" number_of_elements="5" element_types="0 0 0 0 2" animateable="0">
+                <ArrayListDomain name="array_list" input_domain_name="array">
+                    <RequiredProperties>
+                        <Property name="Input" function="Input" />
+                    </RequiredProperties>
+                </ArrayListDomain>
+                <Documentation>
+                    Array that is averaged (per component). The number of elements in each block must match.
+                </Documentation>
+            </StringVectorProperty>
+
+            <OutputPort name="Averaged Block" index="0" id="block">
+                <Documentation>
+                    The native dataset with the now averaged data array.
+                </Documentation>
+            </OutputPort>
+
+            <Hints>
+                <ShowInMenu category="VISUS Data"/>
+            </Hints>
+        </SourceProxy>
+
+        <!--
+
         Grid to polydata.
 
         Convert an unstructured grid to polydata.
