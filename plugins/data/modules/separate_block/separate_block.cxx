@@ -60,17 +60,9 @@ int separate_block::RequestDataObject(vtkInformation*, vtkInformationVector** in
 
     __check_not_null_ret(input, "Input is not a multiblock dataset.");
 
-    // If there is no block or the specified block does not exist, create a dummy object
-    // This step is necessary to allow loading from a state
     if (this->BlockID < 0 || this->BlockID >= static_cast<int>(input->GetNumberOfBlocks()))
     {
-        vtkDataObject* dummy = vtkUnstructuredGrid::New();
-        output_vector->GetInformationObject(0)->Set(vtkDataObject::DATA_OBJECT(), dummy);
-        dummy->FastDelete();
-
-        this->GetOutputPortInformation(0)->Set(vtkDataObject::DATA_EXTENT_TYPE(), dummy->GetExtentType());
-
-        return 1;
+        return 0;
     }
 
     // Create appropriate data object if the type differs from the previous execution
@@ -78,49 +70,10 @@ int separate_block::RequestDataObject(vtkInformation*, vtkInformationVector** in
 
     if (output == nullptr || output->GetDataObjectType() != input->GetBlock(this->BlockID)->GetDataObjectType())
     {
-        // Delete previous output
-        if (output != nullptr)
-        {
-            output->Delete();
-        }
-
         // Create output object of appropriate type
-        switch (input->GetBlock(this->BlockID)->GetDataObjectType())
-        {
-        case VTK_STRUCTURED_GRID:
-            output = vtkStructuredGrid::New();
-            break;
-        case VTK_STRUCTURED_POINTS:
-            output = vtkStructuredPoints::New();
-            break;
-        case VTK_UNSTRUCTURED_GRID:
-            output = vtkUnstructuredGrid::New();
-            break;
-        case VTK_POLY_DATA:
-            output = vtkPolyData::New();
-            break;
-        case VTK_RECTILINEAR_GRID:
-            output = vtkRectilinearGrid::New();
-            break;
-        default:
-        {
-            // Create dummy object to prevent a deleted object of being set as output
-            std::cerr << "Data type not supported." << std::endl;
-
-            vtkDataObject* dummy = vtkUnstructuredGrid::New();
-
-            output_vector->GetInformationObject(0)->Set(vtkDataObject::DATA_OBJECT(), dummy);
-            this->GetOutputPortInformation(0)->Set(vtkDataObject::DATA_EXTENT_TYPE(), dummy->GetExtentType());
-
-            return 0;
-        }
-        }
-
-        // Set created object
-        output_vector->GetInformationObject(0)->Set(vtkDataObject::DATA_OBJECT(), output);
-        output->FastDelete();
-
-        this->GetOutputPortInformation(0)->Set(vtkDataObject::DATA_EXTENT_TYPE(), output->GetExtentType());
+        auto* newOutput = input->GetBlock(this->BlockID)->NewInstance();
+        output_vector->GetInformationObject(0)->Set(vtkDataObject::DATA_OBJECT(), newOutput);
+        newOutput->Delete();
     }
 
     return 1;
