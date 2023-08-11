@@ -171,6 +171,11 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
     error_array->SetNumberOfComponents(1);
     error_array->SetNumberOfTuples(grid->GetNumberOfPoints());
 
+    auto range_array = vtkSmartPointer<vtkDoubleArray>::New();
+    range_array->SetName("Range");
+    range_array->SetNumberOfComponents(1);
+    range_array->SetNumberOfTuples(grid->GetNumberOfPoints());
+
     // Iterate over points and assign it to a bin
     for (vtkIdType p = 0; p < points->GetNumberOfPoints(); ++p)
     {
@@ -203,11 +208,11 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
         OpenMP information
 
         read global:    array_map, bins, points, x_coords, y_coords, z_coords
-        write global:   error_array, output
+        write global:   error_array, range_array, output
         write critical: num_bad_nodes
     **/
-    #pragma omp parallel for schedule(dynamic) default(none) shared(error_array, output, \
-        array_map, bins, points, x_coords, y_coords, z_coords)
+    #pragma omp parallel for schedule(dynamic) default(none) shared(error_array, range_array, \
+        output, array_map, bins, points, x_coords, y_coords, z_coords)
     for (int k = extent[4]; k <= extent[5]; ++k)
     {
         const auto z = z_coords->GetComponent(k, 0);
@@ -324,6 +329,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                     }
 
                     error_array->SetValue(grid_index, closest_point_distance);
+                    range_array->SetValue(grid_index, range - 1);
                 }
             }
         }
