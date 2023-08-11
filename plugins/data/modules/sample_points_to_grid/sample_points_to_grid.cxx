@@ -16,6 +16,7 @@
 
 #include "Eigen/Dense"
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <iostream>
@@ -246,38 +247,41 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                     int num_found = (closest_point != -1) ? 1 : 0;
                     int range = 1;
 
-                    do {
-                        for (int r = -range; r <= range; ++r)
+                    while (num_found < 2 && range < std::max(std::max(z_num_bins, y_num_bins), x_num_bins))
+                    {
+                        const auto r_min = std::max(static_cast<long long>(std::get<3>(bin_index)) - range, 0LL);
+                        const auto r_max = std::min(static_cast<long long>(std::get<3>(bin_index)) + range, z_num_bins - 1);
+
+                        for (int r = r_min; r <= r_max; ++r)
                         {
                             const auto z_offset = r * x_num_bins * y_num_bins;
 
-                            if (std::get<3>(bin_index) + r >= 0 && static_cast<long long>(std::get<3>(bin_index)) + r < z_num_bins)
+                            const auto q_min = std::max(static_cast<long long>(std::get<2>(bin_index)) - range, 0LL);
+                            const auto q_max = std::min(static_cast<long long>(std::get<2>(bin_index)) + range, y_num_bins - 1);
+
+                            for (int q = q_min; q <= q_max; ++q)
                             {
-                                for (int q = -range; q <= range; ++q)
+                                const auto y_offset = q * x_num_bins;
+
+                                const auto p_min = std::max(static_cast<long long>(std::get<1>(bin_index)) - range, 0LL);
+                                const auto p_max = std::min(static_cast<long long>(std::get<1>(bin_index)) + range, x_num_bins - 1);
+
+                                for (int p = p_min; p <= p_max; ++p)
                                 {
-                                    const auto y_offset = q * x_num_bins;
+                                    const auto x_offset = p;
 
-                                    if (std::get<2>(bin_index) + q >= 0 && static_cast<long long>(std::get<2>(bin_index)) + q < y_num_bins)
+                                    if (r == r_min || r == r_max || q == q_min || q == q_max || p == p_min || p == p_max)
                                     {
-                                        for (int p = -range; p <= range; ++p)
+                                        const vtkIdType neighbor_bin_index = std::get<0>(bin_index) + x_offset + y_offset + z_offset;
+
+                                        for (const auto& p : bins[neighbor_bin_index])
                                         {
-                                            const auto x_offset = static_cast<long long>(p);
+                                            points->GetPoint(p, point.data());
 
-                                            if (std::get<1>(bin_index) + p >= 0 && static_cast<long long>(std::get<1>(bin_index)) + p < x_num_bins
-                                                && (r != 0 || q != 0 || p != 0))
+                                            if ((point - coords).norm() < closest_point_distance)
                                             {
-                                                const vtkIdType neighbor_bin_index = std::get<0>(bin_index) + x_offset + y_offset + z_offset;
-
-                                                for (const auto& p : bins[neighbor_bin_index])
-                                                {
-                                                    points->GetPoint(p, point.data());
-
-                                                    if ((point - coords).norm() < closest_point_distance)
-                                                    {
-                                                        closest_point_distance = (point - coords).norm();
-                                                        closest_point = p;
-                                                    }
-                                                }
+                                                closest_point_distance = (point - coords).norm();
+                                                closest_point = p;
                                             }
                                         }
                                     }
@@ -288,7 +292,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                         ++range;
 
                         if (closest_point != -1) ++num_found; // Go one more round after finding a potential closest point to make sure
-                    } while (num_found < 2 || range == std::max(std::max(z_num_bins, y_num_bins), x_num_bins));
+                    }
 
                     // No suitable closest point should now only occur if there is no point at all
                     if (closest_point == -1)
