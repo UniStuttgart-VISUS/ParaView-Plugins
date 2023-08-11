@@ -288,7 +288,7 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                         ++range;
 
                         if (closest_point != -1) ++num_found; // Go one more round after finding a potential closest point to make sure
-                    } while (num_found < 2 || range == std::max(z_num_bins, y_num_bins, x_num_bins));
+                    } while (num_found < 2 || range == std::max(std::max(z_num_bins, y_num_bins), x_num_bins));
 
                     // No suitable closest point should now only occur if there is no point at all
                     if (closest_point == -1)
