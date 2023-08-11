@@ -252,27 +252,25 @@ int sample_points_to_grid::RequestData(vtkInformation*, vtkInformationVector** i
                         const auto r_min = std::max(static_cast<long long>(std::get<3>(bin_index)) - range, 0LL);
                         const auto r_max = std::min(static_cast<long long>(std::get<3>(bin_index)) + range, z_num_bins - 1);
 
+                        const auto q_min = std::max(static_cast<long long>(std::get<2>(bin_index)) - range, 0LL);
+                        const auto q_max = std::min(static_cast<long long>(std::get<2>(bin_index)) + range, y_num_bins - 1);
+
+                        const auto p_min = std::max(static_cast<long long>(std::get<1>(bin_index)) - range, 0LL);
+                        const auto p_max = std::min(static_cast<long long>(std::get<1>(bin_index)) + range, x_num_bins - 1);
+
                         for (int r = r_min; r <= r_max; ++r)
                         {
-                            const auto z_offset = r * x_num_bins * y_num_bins;
-
-                            const auto q_min = std::max(static_cast<long long>(std::get<2>(bin_index)) - range, 0LL);
-                            const auto q_max = std::min(static_cast<long long>(std::get<2>(bin_index)) + range, y_num_bins - 1);
-
                             for (int q = q_min; q <= q_max; ++q)
                             {
-                                const auto y_offset = q * x_num_bins;
-
-                                const auto p_min = std::max(static_cast<long long>(std::get<1>(bin_index)) - range, 0LL);
-                                const auto p_max = std::min(static_cast<long long>(std::get<1>(bin_index)) + range, x_num_bins - 1);
-
                                 for (int p = p_min; p <= p_max; ++p)
                                 {
-                                    const auto x_offset = p;
-
                                     if (r == r_min || r == r_max || q == q_min || q == q_max || p == p_min || p == p_max)
                                     {
-                                        const vtkIdType neighbor_bin_index = std::get<0>(bin_index) + x_offset + y_offset + z_offset;
+                                        const auto z_offset = r * x_num_bins * y_num_bins;
+                                        const auto y_offset = q * x_num_bins;
+                                        const auto x_offset = p;
+
+                                        const vtkIdType neighbor_bin_index = x_offset + y_offset + z_offset;
 
                                         for (const auto& p : bins[neighbor_bin_index])
                                         {
